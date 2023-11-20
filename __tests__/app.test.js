@@ -8,6 +8,7 @@ const {
   commentData,
   articleData,
 } = require('../db/data/test-data/index.js')
+const { forEach } = require('../db/data/test-data/articles.js')
 
 afterAll(() => {
   db.end()
@@ -22,3 +23,14 @@ describe('GET:200 /api/healthcheck', () => {
     return request(app).get('/api/healthcheck').expect(200)
   })
 })
+
+describe('GET:200 /api/topics', () => {
+    test('endpoint returns all topics as an array with slug and description', () => {
+        return request(app).get('/api/topics').expect(200).then(({body})=>{
+            body.forEach((topic)=>{
+                expect(Object.keys(topic)).toContain('description')
+                expect(Object.keys(topic)).toContain('slug')
+            })
+        })
+    });
+});
