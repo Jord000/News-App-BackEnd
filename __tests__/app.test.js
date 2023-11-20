@@ -54,10 +54,38 @@ describe('GET:200 /api', () => {
       .get('/api')
       .expect(200)
       .then(({ body: { data } }) => {
-        expect(data).toMatchObject(endpointFile
-        )
+        expect(data).toMatchObject(endpointFile)
+      })
+  })
+})
+
+describe('GET:200 /api/articles', () => {
+  test('should return all articles with the correct properties', () => {
+    const correctProperties = [
+      'author',
+      'title',
+      'article_id',
+      'topic',
+      'created_at',
+      'votes',
+      'article_img_url',
+      'comment_count',
+    ]
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(articleData.length)
+        articles.forEach((article) => {
+          expect(Object.keys(article)).toEqual(
+            expect.arrayContaining(correctProperties)
+          )
+        })
       })
   })
 })
 
 
+// Consider what errors could occur with this endpoint, and make sure to test for them.
+
+// Remember to add a description of this endpoint to your /api endpoint.

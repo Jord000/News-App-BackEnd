@@ -1,4 +1,8 @@
-const { selectAllTopics, selectEndPoints } = require('./models')
+const {
+  selectAllTopics,
+  selectEndPoints,
+  selectAllArticles,
+} = require('./models')
 
 exports.healthCheck = (req, res) => {
   res.status(200).send('API is online and running')
@@ -16,6 +20,12 @@ exports.getEndPoints = (req, res, next) => {
   selectEndPoints()
     .then((data) => res.status(200).send({ data }))
     .catch(next)
+}
+
+exports.getAllArticles = (req, res, next) => {
+  selectAllArticles().then((articles)=>{
+    res.status(200).send({ articles })
+  }).catch(next)
 }
 
 exports.incorrectPath = (req, res) => {
