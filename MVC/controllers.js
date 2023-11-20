@@ -1,4 +1,4 @@
-const { selectAllTopics } = require('./models')
+const { selectAllTopics, selectEndPoints } = require('./models')
 
 exports.healthCheck = (req, res) => {
   res.status(200).send('API is online and running')
@@ -9,6 +9,12 @@ exports.getAllTopics = (req, res, next) => {
     .then((topics) => {
       res.status(200).send({ topics })
     })
+    .catch(next)
+}
+
+exports.getEndPoints = (req, res, next) => {
+  selectEndPoints()
+    .then((data) => res.status(200).send({ data }))
     .catch(next)
 }
 

@@ -46,3 +46,19 @@ describe('GET:200 /api/topics', () => {
       })
   })
 })
+
+describe('GET:200 /api', () => {
+  test('should respond with an object containing all endpoints', () => {
+    return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({ body: { data } }) => {
+        expect(data).toMatchObject({
+          'GET /api': {},
+          'GET /api/healthcheck': {},
+          'GET /api/topics': {},
+          'GET /api/articles': {},
+        })
+      })
+  })
+})
