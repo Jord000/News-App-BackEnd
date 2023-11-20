@@ -41,8 +41,8 @@ describe('GET:200 /api/topics', () => {
     return request(app)
       .get('/api/topicsincorrect')
       .expect(404)
-      .then((response) =>{
+      .then((response) => {
         expect(response.body.msg).toEqual('incorrect path - path not found')
-  })
+      })
   })
 })
