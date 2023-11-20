@@ -6,7 +6,7 @@ const {
   getEndPoints,
   getArticleById
 } = require('./controllers')
-const { customError, internalError } = require('./errors')
+const { customError, internalError,sqlError } = require('./errors')
 
 const app = express()
 
@@ -17,6 +17,7 @@ app.get('/api/articles/:article_id',getArticleById)
 
 app.all('/*', incorrectPath)
 
+app.use(sqlError)
 app.use(customError)
 app.use(internalError)
 

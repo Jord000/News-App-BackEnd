@@ -78,4 +78,20 @@ describe('GET:200 /GET/api/articles/:article_id', () => {
         })
       })
   })
+  test('should return correct error when wrong article_id provided', () => {
+    return request(app)
+      .get('/api/articles/999999999999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not Found')
+      })
+  })
+  test('should handle bad requests', () => {
+    return request(app)
+      .get('/api/articles/whoopsie')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request')
+      })
+  })
 })
