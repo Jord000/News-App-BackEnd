@@ -9,6 +9,7 @@ const {
   articleData,
 } = require('../db/data/test-data/index.js')
 const { forEach } = require('../db/data/test-data/articles.js')
+const endpointFile = require('../endpoints.json')
 
 afterAll(() => {
   db.end()
@@ -53,19 +54,10 @@ describe('GET:200 /api', () => {
       .get('/api')
       .expect(200)
       .then(({ body: { data } }) => {
-        expect(data).toMatchObject({
-          'GET /api': {},
-          'GET /api/healthcheck': {},
-          'GET /api/topics': {},
-          'GET /api/articles': {},
-        })
-        const endpointentries = Object.values(data)
-        endpointentries.forEach((endPoint)=>{
-          expect(endPoint).toHaveProperty('description')
-          expect(endPoint).toHaveProperty('queries')
-          expect(endPoint).toHaveProperty('format')
-          expect(endPoint).toHaveProperty('exampleResponse')
-        })
+        expect(data).toMatchObject(endpointFile
+        )
       })
   })
 })
+
+
