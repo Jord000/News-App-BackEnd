@@ -59,6 +59,13 @@ describe('GET:200 /api', () => {
           'GET /api/topics': {},
           'GET /api/articles': {},
         })
+        const endpointentries = Object.values(data)
+        endpointentries.forEach((endPoint)=>{
+          expect(endPoint).toHaveProperty('description')
+          expect(endPoint).toHaveProperty('queries')
+          expect(endPoint).toHaveProperty('format')
+          expect(endPoint).toHaveProperty('exampleResponse')
+        })
       })
   })
 })
