@@ -12,6 +12,6 @@ exports.getAllTopics = (req, res, next) => {
     .catch(next)
 }
 
-exports.incorrectPath = (req, res) => {
+exports.incorrectPath = (req, res,next) => {
     res.status(404).send({ msg: 'incorrect path - path not found' })
   }
