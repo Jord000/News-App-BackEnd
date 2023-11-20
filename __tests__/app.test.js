@@ -29,11 +29,11 @@ describe('GET:200 /api/topics', () => {
     return request(app)
       .get('/api/topics')
       .expect(200)
-      .then(({ body }) => {
-        expect(body.length).toEqual(topicData.length)
-        body.forEach((topic) => {
-          expect(Object.keys(topic)).toContain('description')
-          expect(Object.keys(topic)).toContain('slug')
+      .then(({ body: { topics } }) => {
+        expect(topics.length).toEqual(topicData.length)
+        topics.forEach((topic) => {
+          expect(topic).toHaveProperty('description')
+          expect(topic).toHaveProperty('slug')
         })
       })
   })
@@ -41,5 +41,8 @@ describe('GET:200 /api/topics', () => {
     return request(app)
       .get('/api/topicsincorrect')
       .expect(404)
-      })
+      .then((response) =>{
+        expect(response.body.msg).toEqual('incorrect path - path not found')
   })
+  })
+})
