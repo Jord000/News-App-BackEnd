@@ -54,10 +54,28 @@ describe('GET:200 /api', () => {
       .get('/api')
       .expect(200)
       .then(({ body: { data } }) => {
-        expect(data).toMatchObject(endpointFile
-        )
+        expect(data).toMatchObject(endpointFile)
       })
   })
 })
 
-
+describe('GET:200 /GET/api/articles/:article_id', () => {
+  test('should respond with an object matching the correct article id entry', () => {
+    return request(app)
+      .get('/api/articles/5')
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toMatchObject({
+          article5: {
+            article_id: 5,
+            title: 'UNCOVERED: catspiracy to bring down democracy',
+            topic: 'cats',
+            author: 'rogersop',
+            body: 'Bastet walks amongst us, and the cats are taking arms!',
+            article_img_url:
+              'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+          },
+        })
+      })
+  })
+})
