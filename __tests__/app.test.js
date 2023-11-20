@@ -8,8 +8,8 @@ const {
   commentData,
   articleData,
 } = require('../db/data/test-data/index.js')
-const { forEach } = require('../db/data/test-data/articles.js')
 const endpointFile = require('../endpoints.json')
+const jestSorted = require('jest-sorted')
 
 afterAll(() => {
   db.end()
@@ -80,12 +80,9 @@ describe('GET:200 /api/articles', () => {
           expect(Object.keys(article)).toEqual(
             expect.arrayContaining(correctProperties)
           )
+          expect(article).not.toHaveProperty('body')
         })
+        expect(articles).toBeSortedBy('created_at', { descending: true })
       })
   })
 })
-
-
-// Consider what errors could occur with this endpoint, and make sure to test for them.
-
-// Remember to add a description of this endpoint to your /api endpoint.
