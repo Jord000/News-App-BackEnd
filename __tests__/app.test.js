@@ -30,13 +30,14 @@ describe('GET:200 /api/topics', () => {
       .get('/api/topics')
       .expect(200)
       .then(({ body }) => {
+        expect(body.length).toEqual(topicData.length)
         body.forEach((topic) => {
           expect(Object.keys(topic)).toContain('description')
           expect(Object.keys(topic)).toContain('slug')
         })
       })
   })
-  test('provides error for incorrect api path', () => {
+  test('provides error for incorrect api path spelling', () => {
     return request(app)
       .get('/api/topicsincorrect')
       .expect(404)
