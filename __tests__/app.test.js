@@ -164,11 +164,11 @@ describe('GET: /api/articles/:article_id/comments', () => {
   });
   test('should handle non-existant ID request', () => {
     return request(app)
-    .get('/api/articles/99/comments')
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Not Found');
-    });
+      .get('/api/articles/99/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
   });
   test('should handle non-existant comments request', () => {
     return request(app)
@@ -180,27 +180,26 @@ describe('GET: /api/articles/:article_id/comments', () => {
   });
   test('should handle incorrect id entry', () => {
     return request(app)
-    .get('/api/articles/incorrect/comments')
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Bad Request');
-    });
+      .get('/api/articles/incorrect/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
   });
 });
-
 
 describe('POST /api/articles/:article_id/comments', () => {
   const postObj = {
     username: 'butter_bridge',
     body: 'this is a test comment to add to article 2',
-  }
+  };
   const wrongPost1 = {
     username: 'thisIsNotAUser',
     body: 'this is a test comment',
-  }
+  };
   const wrongPost2 = {
     username: 'butter_bridge',
-  }
+  };
   test('should allow posting of a comment to an article by its id', () => {
     return request(app)
       .post('/api/articles/2/comments')
@@ -234,30 +233,32 @@ describe('POST /api/articles/:article_id/comments', () => {
       .then(({ body }) => {
         expect(body.msg).toBe('Bad Request');
       });
-  })
+  });
   test('should send correct error back when user not found', () => {
     return request(app)
-    .post('/api/articles/2/comments')
-    .send(wrongPost1)
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Not Found');
-    });
+      .post('/api/articles/2/comments')
+      .send(wrongPost1)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
   });
   test('should send error when body not included', () => {
     return request(app)
-    .post('/api/articles/2/comments')
-    .send(wrongPost2)
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Bad Request');
-    });
+      .post('/api/articles/2/comments')
+      .send(wrongPost2)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
   });
 });
 
 describe('PATCH: /api/articles/:article_id', () => {
+  const incVotes = { inc_votes: 20 };
+  const wrongVote = { notcorrect: 'incorrect' };
+  const reduceVotes = { inc_votes: -200 };
   test('should be able to update an article votes by its id', () => {
-    const incVotes = { inc_votes: 20 };
     return request(app)
       .patch('/api/articles/5')
       .send(incVotes)
@@ -278,6 +279,49 @@ describe('PATCH: /api/articles/:article_id', () => {
             article_img_url:
               'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
             votes: 20,
+          });
+        }
+      );
+  });
+  test('should handle incorrect id', () => {
+    return request(app)
+      .patch('/api/articles/noarticleid')
+      .send(incVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+  test('should send correct error back when patch object incorrect', () => {
+    return request(app)
+      .patch('/api/articles/2')
+      .send(wrongVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+  test('should work with minus votes', () => {
+    return request(app)
+      .patch('/api/articles/5')
+      .send(reduceVotes)
+      .expect(200)
+      .then(
+        ({
+          body: {
+            article: [updatedArticle],
+          },
+        }) => {
+          expect(updatedArticle).toMatchObject({
+            article_id: 5,
+            title: 'UNCOVERED: catspiracy to bring down democracy',
+            topic: 'cats',
+            author: 'rogersop',
+            body: 'Bastet walks amongst us, and the cats are taking arms!',
+            created_at: '2020-08-03T13:14:00.000Z',
+            article_img_url:
+              'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+            votes: -200,
           });
         }
       );
