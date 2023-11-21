@@ -66,6 +66,21 @@
       "article_id": 9
     }
   },
+
+     
+  "POST /api/articles/:article_id/comments": {
+    "description": "Posts a JSON object containing a comment to the specific article_id in the path",
+    "queries": [],
+    "format": "Post object requires username & body entries",
+    "exampleResponse": {
+      "comment_id": 19,
+      "body": "this is a test comment to add to article 2",
+      "article_id": 2,
+      "author": "butter_bridge",
+      "votes": 0,
+      "created_at": "2023-11-21T14:13:17.328Z"
+    }
+  },
   "PATCH: /api/articles/:article_id": {
     "description": "allows for incrementing of votes",
     "queries": [],

@@ -4,6 +4,8 @@ const {
   selectAllArticles,
   selectArticleById,
   selectCommentsById,
+  checkArticleId,
+  addCommentToArticleById,
   incVotesById,
 } = require('./models');
 
@@ -65,6 +67,14 @@ exports.incrementVotes = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postCommentToArticle = (req,res,next)=>{
+  const articleId = req.params.article_id
+  const post = req.body
+  addCommentToArticleById(articleId,post).then(([comment])=>{
+    res.status(201).send({ comment })
+  }).catch(next)
+}
 
 exports.incorrectPath = (req, res) => {
   res.status(404).send({ msg: 'incorrect path - path not found' });

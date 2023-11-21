@@ -43,7 +43,7 @@ describe('GET:200 /api/topics', () => {
       .get('/api/topicsincorrect')
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toEqual('incorrect path - path not found');
+        expect(response.body.msg).toBe('incorrect path - path not found');
       });
   });
 });
@@ -83,7 +83,7 @@ describe('GET:200 /GET/api/articles/:article_id', () => {
       .get('/api/articles/999999999999')
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toEqual('Bad Request - outside range');
+        expect(body.msg).toBe('Bad Request - outside range');
       });
   });
   test('should return correct error when wrong article_id provided', () => {
@@ -91,7 +91,7 @@ describe('GET:200 /GET/api/articles/:article_id', () => {
       .get('/api/articles/99')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toEqual('Not Found');
+        expect(body.msg).toBe('Not Found');
       });
   });
   test('should handle bad requests', () => {
@@ -99,7 +99,7 @@ describe('GET:200 /GET/api/articles/:article_id', () => {
       .get('/api/articles/whoopsie')
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toEqual('Bad Request');
+        expect(body.msg).toBe('Bad Request');
       });
   });
 });
@@ -164,11 +164,11 @@ describe('GET: /api/articles/:article_id/comments', () => {
   });
   test('should handle non-existant ID request', () => {
     return request(app)
-      .get('/api/articles/99/comments')
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toEqual('Not Found');
-      });
+    .get('/api/articles/99/comments')
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not Found');
+    });
   });
   test('should handle non-existant comments request', () => {
     return request(app)
@@ -180,11 +180,78 @@ describe('GET: /api/articles/:article_id/comments', () => {
   });
   test('should handle incorrect id entry', () => {
     return request(app)
-      .get('/api/articles/incorrect/comments')
+    .get('/api/articles/incorrect/comments')
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Bad Request');
+    });
+  });
+});
+
+
+describe('POST /api/articles/:article_id/comments', () => {
+  const postObj = {
+    username: 'butter_bridge',
+    body: 'this is a test comment to add to article 2',
+  }
+  const wrongPost1 = {
+    username: 'thisIsNotAUser',
+    body: 'this is a test comment',
+  }
+  const wrongPost2 = {
+    username: 'butter_bridge',
+  }
+  test('should allow posting of a comment to an article by its id', () => {
+    return request(app)
+      .post('/api/articles/2/comments')
+      .send(postObj)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toMatchObject({
+          comment_id: 19,
+          author: 'butter_bridge',
+          body: 'this is a test comment to add to article 2',
+          article_id: 2,
+          created_at: expect.any(String),
+          votes: 0,
+        });
+      });
+  });
+  test('should return correct error when wrong article_id provided', () => {
+    return request(app)
+      .post('/api/articles/99/comments')
+      .send(postObj)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
+  });
+  test('should handle bad requests', () => {
+    return request(app)
+      .post('/api/articles/noarticleid/comments')
+      .send(postObj)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toEqual('Bad Request');
+        expect(body.msg).toBe('Bad Request');
       });
+  })
+  test('should send correct error back when user not found', () => {
+    return request(app)
+    .post('/api/articles/2/comments')
+    .send(wrongPost1)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Not Found');
+    });
+  });
+  test('should send error when body not included', () => {
+    return request(app)
+    .post('/api/articles/2/comments')
+    .send(wrongPost2)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Bad Request');
+    });
   });
 });
 
