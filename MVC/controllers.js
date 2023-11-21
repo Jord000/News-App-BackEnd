@@ -4,7 +4,7 @@ const {
   selectAllArticles,
   selectArticleById,
   selectCommentsById,
-  checkArticleId,
+  incVotesById,
 } = require('./models');
 
 exports.healthCheck = (req, res) => {
@@ -51,7 +51,17 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
   Promise.all(promisesInput)
     .then((results) => {
-      res.status(200).send({ comments: results[1] })
+      res.status(200).send({ comments: results[1] });
+    })
+    .catch(next);
+};
+
+exports.incrementVotes = (req, res, next) => {
+  const articleId = req.params.article_id;
+  const incAmount = req.body.inc_votes;
+  incVotesById(articleId, incAmount)
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch(next);
 };

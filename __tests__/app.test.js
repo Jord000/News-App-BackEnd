@@ -156,7 +156,7 @@ describe('GET: /api/articles/:article_id/comments', () => {
             created_at: expect.any(String),
             author: expect.any(String),
             body: expect.any(String),
-            article_id: 3
+            article_id: 3,
           });
         });
         expect(comments).toBeSortedBy('created_at', { descending: false });
@@ -164,27 +164,55 @@ describe('GET: /api/articles/:article_id/comments', () => {
   });
   test('should handle non-existant ID request', () => {
     return request(app)
-    .get('/api/articles/99/comments')
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toEqual('Not Found');
-    });
+      .get('/api/articles/99/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not Found');
+      });
   });
   test('should handle non-existant comments request', () => {
     return request(app)
-    .get('/api/articles/2/comments')
-    .expect(200)
-    .then(({ body }) => {
-      expect(body).toEqual({comments: []});
-    });
-  })
+      .get('/api/articles/2/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({ comments: [] });
+      });
+  });
   test('should handle incorrect id entry', () => {
     return request(app)
-    .get('/api/articles/incorrect/comments')
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toEqual('Bad Request');
-    });
+      .get('/api/articles/incorrect/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request');
+      });
   });
 });
 
+describe('PATCH: /api/articles/:article_id', () => {
+  test('should be able to update an article votes by its id', () => {
+    const incVotes = { inc_votes: 20 };
+    return request(app)
+      .patch('/api/articles/5')
+      .send(incVotes)
+      .expect(200)
+      .then(
+        ({
+          body: {
+            article: [updatedArticle],
+          },
+        }) => {
+          expect(updatedArticle).toMatchObject({
+            article_id: 5,
+            title: 'UNCOVERED: catspiracy to bring down democracy',
+            topic: 'cats',
+            author: 'rogersop',
+            body: 'Bastet walks amongst us, and the cats are taking arms!',
+            created_at: '2020-08-03T13:14:00.000Z',
+            article_img_url:
+              'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+            votes: 20,
+          });
+        }
+      );
+  });
+});

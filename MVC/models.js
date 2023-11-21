@@ -55,3 +55,14 @@ exports.selectCommentsById = (id) => {
       return comments;
     });
 };
+
+exports.incVotesById = (id, inc) => {
+  return db
+    .query(
+      'UPDATE articles SET votes = votes + $2 WHERE article_id = $1 RETURNING*;',
+      [id, inc]
+    )
+    .then(({ rows: article }) => {
+      return article;
+    });
+};
