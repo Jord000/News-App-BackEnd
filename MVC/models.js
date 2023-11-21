@@ -40,12 +40,11 @@ exports.selectArticleById = (id) => {
     .then(({ rows: [article] }) => {
       if (!article) {
         return Promise.reject({ status: 404, msg: 'Not Found' });
-      }
-      return article;
+      } else return article;
     });
 };
 
-exports.selectCommentsById = (id) => {
+exports.selectCommentsByArticleId = (id) => {
   return db
     .query(
       'SELECT*FROM comments WHERE article_id = $1  ORDER BY created_at ASC;',
@@ -56,11 +55,34 @@ exports.selectCommentsById = (id) => {
     });
 };
 
-exports.addCommentToArticleById = (id, {body, username}) => {
+exports.addCommentToArticleById = (id, { body, username }) => {
   return db
-  .query('INSERT INTO comments ( article_id, author, body) VALUES ($1,$2,$3) RETURNING*;', [id,username,body]).then(({rows})=>{
+    .query(
+      'INSERT INTO comments ( article_id, author, body) VALUES ($1,$2,$3) RETURNING*;',
+      [id, username, body]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};
 
-    return rows
-  })
+exports.deleteOneComment = (id) => {
+  console.log(id,'function online')
+  return db.query('DELETE FROM comments WHERE comment_id = $1;', [id]);
+};
 
+exports.selectAllComments = () => {
+  return db.query('SELECT*FROM comments;').then(({ rows: comments }) => {
+    return comments;
+  });
+};
+
+exports.selectCommentById = (id) => {
+  return db
+    .query('SELECT*FROM comments WHERE comment_id = $1;', [id])
+    .then(({ rows: [comments] }) => {
+      if (!comments) {
+        return Promise.reject({ status: 404, msg: 'Not Found' });
+      } else return comments;
+    });
 };
