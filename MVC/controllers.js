@@ -42,7 +42,6 @@ exports.getAllArticles = (req, res, next) => {
 exports.postCommentToArticle = (req,res,next)=>{
   const articleId = req.params.article_id
   const post = req.body
-
   addCommentToArticleById(articleId,post).then(([comment])=>{
     res.status(201).send({ comment })
   }).catch(next)

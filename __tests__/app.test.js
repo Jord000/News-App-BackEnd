@@ -141,16 +141,23 @@ describe('GET:200 /api/articles', () => {
 });
 
 describe('POST /api/articles/:article_id/comments', () => {
+  const postObj = {
+    username: 'butter_bridge',
+    body: 'this is a test comment to add to article 2',
+  }
+  const wrongPost1 = {
+    username: 'thisIsNotAUser',
+    body: 'this is a test comment',
+  }
+  const wrongPost2 = {
+    username: 'butter_bridge',
+  }
   test('should allow posting of a comment to an article by its id', () => {
-    const postObj = {
-      username: 'butter_bridge',
-      body: 'this is a test comment to add to article 2',
-    };
     return request(app)
       .post('/api/articles/2/comments')
       .send(postObj)
       .expect(201)
-      .then(({ body: {comment} }) => {
+      .then(({ body: { comment } }) => {
         expect(comment).toMatchObject({
           comment_id: 19,
           author: 'butter_bridge',
@@ -161,5 +168,40 @@ describe('POST /api/articles/:article_id/comments', () => {
         });
       });
   });
+  test('should return correct error when wrong article_id provided', () => {
+    return request(app)
+      .post('/api/articles/99/comments')
+      .send(postObj)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not Found');
+      });
+  });
+  test('should handle bad requests', () => {
+    return request(app)
+      .post('/api/articles/noarticleid/comments')
+      .send(postObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request');
+      });
+  })
+  test('should send correct error back when user not found', () => {
+    return request(app)
+    .post('/api/articles/2/comments')
+    .send(wrongPost1)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toEqual('Not Found');
+    });
+  });
+  test('should send error when body not included', () => {
+    return request(app)
+    .post('/api/articles/2/comments')
+    .send(wrongPost2)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toEqual('Bad Request');
+    });
+  });
 });
-

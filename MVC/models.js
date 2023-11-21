@@ -48,6 +48,7 @@ exports.selectArticleById = (id) => {
 exports.addCommentToArticleById = (id, {body, username}) => {
   return db
   .query('INSERT INTO comments ( article_id, author, body) VALUES ($1,$2,$3) RETURNING*;', [id,username,body]).then(({rows})=>{
+
     return rows
   })
 
