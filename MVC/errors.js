@@ -1,3 +1,10 @@
+exports.sqlError = (err, req, res, next) => {
+  if (err.code === '22003') {
+    res.status(400).send({ msg: 'Bad Request - outside range' })
+  } else if (err.code === '22P02') {
+    res.status(400).send({ msg: 'Bad Request' })
+  } else next(err)
+}
 
 exports.customError = (err, req, res, next) => {
   if (err.status) {

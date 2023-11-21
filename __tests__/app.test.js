@@ -59,6 +59,51 @@ describe('GET:200 /api', () => {
   });
 });
 
+describe('GET:200 /GET/api/articles/:article_id', () => {
+  test('should respond with an object matching the correct article id entry', () => {
+    return request(app)
+      .get('/api/articles/5')
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toMatchObject({
+          article5: {
+            article_id: 5,
+            title: 'UNCOVERED: catspiracy to bring down democracy',
+            topic: 'cats',
+            author: 'rogersop',
+            body: 'Bastet walks amongst us, and the cats are taking arms!',
+            article_img_url:
+              'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+          },
+        });
+      });
+  });
+  test('should return correct error when wrong article_id provided', () => {
+    return request(app)
+      .get('/api/articles/999999999999')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request - outside range');
+      });
+  });
+  test('should return correct error when wrong article_id provided', () => {
+    return request(app)
+      .get('/api/articles/99')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not Found');
+      });
+  });
+  test('should handle bad requests', () => {
+    return request(app)
+      .get('/api/articles/whoopsie')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request');
+      });
+  });
+});
+
 describe('GET:200 /api/articles', () => {
   test('should return all articles with the correct properties', () => {
     const correctProperties = [
