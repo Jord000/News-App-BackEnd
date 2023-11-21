@@ -1,5 +1,4 @@
 exports.sqlError = (err, req, res, next) => {
-  console.log(err)
   if (err.code === '22003') {
     res.status(400).send({ msg: 'Bad Request - outside range' })
   } else if (err.code === '22P02') {
@@ -8,7 +7,6 @@ exports.sqlError = (err, req, res, next) => {
 }
 
 exports.customError = (err, req, res, next) => {
-  console.log(err)
   if (err.status) {
     res.status(err.status).send({ msg: err.msg })
   } else next(err)
