@@ -139,6 +139,55 @@ describe('GET:200 /api/articles', () => {
       });
   });
 });
+describe('GET: /api/articles/:article_id/comments', () => {
+  test('should provide all comments for an article by its Id', () => {
+    const testFilter = commentData.filter(
+      (comment) => comment.article_id === 3
+    );
+    return request(app)
+      .get('/api/articles/3/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(testFilter.length);
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: 3
+          });
+        });
+        expect(comments).toBeSortedBy('created_at', { descending: false });
+      });
+  });
+  test('should handle non-existant ID request', () => {
+    return request(app)
+    .get('/api/articles/99/comments')
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toEqual('Not Found');
+    });
+  });
+  test('should handle non-existant comments request', () => {
+    return request(app)
+    .get('/api/articles/2/comments')
+    .expect(200)
+    .then(({ body }) => {
+      expect(body).toEqual({comments: []});
+    });
+  })
+  test('should handle incorrect id entry', () => {
+    return request(app)
+    .get('/api/articles/incorrect/comments')
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toEqual('Bad Request');
+    });
+  });
+});
+
 
 describe('POST /api/articles/:article_id/comments', () => {
   const postObj = {
