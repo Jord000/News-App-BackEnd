@@ -85,7 +85,7 @@ describe('GET:200 /GET/api/articles/:article_id', () => {
         expect(body.msg).toEqual('Bad Request - outside range');
       });
   });
-  test.only('should return correct error when wrong article_id provided', () => {
+  test('should return correct error when wrong article_id provided', () => {
     return request(app)
       .get('/api/articles/99')
       .expect(404)
