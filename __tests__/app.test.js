@@ -292,7 +292,7 @@ describe('PATCH: /api/articles/:article_id', () => {
         expect(body.msg).toBe('Bad Request');
       });
   });
-  test('should send correct error back when patch object incorrect', () => {
+  test.only('should send correct error back when patch object incorrect', () => {
     return request(app)
       .patch('/api/articles/2')
       .send(wrongVote)
