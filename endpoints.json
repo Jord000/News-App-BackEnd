@@ -1,15 +1,13 @@
 {
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api",
-  "queries": [],
-  "format": "JSON object",
-  "exampleResponse": {"GET /api":{}}
-
-
+    "queries": [],
+    "format": "JSON object",
+    "exampleResponse": { "GET /api": {} }
   },
-  "GET /api/healthcheck":{
+  "GET /api/healthcheck": {
     "description": "serves a response to show the server is online",
-    "queries":[],
+    "queries": [],
     "format": "string",
     "exampleResponse": "API is online and running"
   },
@@ -24,10 +22,11 @@
   "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
-    "format":"Object with a key of articles and value as an array of article objects",
+    "format": "Object with a key of articles and value as an array of article objects",
     "exampleResponse": {
       "articles": [
-        { "article_id": 10,
+        {
+          "article_id": 10,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
@@ -40,21 +39,31 @@
     }
   },
   "GET /api/articles/:article_id": {
-    "description":"Searches for a specific article by article_id",
-    "queries":[],
-    "format":"Object with a key of article{id} and value as object with article information",
-    "exampleResponse":{
-        "article5": {
+    "description": "Searches for a specific article by article_id",
+    "queries": [],
+    "format": "Object with a key of article{id} and value as object with article information",
+    "exampleResponse": {
+      "article5": {
         "article_id": 5,
         "title": "UNCOVERED: catspiracy to bring down democracy",
         "topic": "cats",
         "author": "rogersop",
         "body": "Bastet walks amongst us, and the cats are taking arms!",
-        "article_img_url":
-          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-      
-    }}
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Posts a JSON object containing a comment to the specific article_id in the path",
+    "queries": [],
+    "format": "Post object requires username & body entries",
+    "exampleResponse": {
+      "comment_id": 19,
+      "body": "this is a test comment to add to article 2",
+      "article_id": 2,
+      "author": "butter_bridge",
+      "votes": 0,
+      "created_at": "2023-11-21T14:13:17.328Z"
+    }
   }
-  
 }
-

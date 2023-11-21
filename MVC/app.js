@@ -5,11 +5,13 @@ const {
   incorrectPath,
   getEndPoints,
   getAllArticles,
-  getArticleById
+  getArticleById,
+  postCommentToArticle
 } = require('./controllers')
 const { customError, internalError,sqlError } = require('./errors')
 
 const app = express()
+app.use(express.json());
 
 app.get('/api/healthcheck', healthCheck)
 app.get('/api/topics', getAllTopics)
@@ -17,7 +19,7 @@ app.get('/api', getEndPoints)
 app.get('/api/articles/:article_id',getArticleById)
 app.get('/api/articles',getAllArticles)
 
-
+app.post('/api/articles/:article_id/comments',postCommentToArticle)
 app.all('/*', incorrectPath)
 
 app.use(sqlError)

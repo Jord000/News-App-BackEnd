@@ -139,3 +139,27 @@ describe('GET:200 /api/articles', () => {
       });
   });
 });
+
+describe('POST /api/articles/:article_id/comments', () => {
+  test('should allow posting of a comment to an article by its id', () => {
+    const postObj = {
+      username: 'butter_bridge',
+      body: 'this is a test comment to add to article 2',
+    };
+    return request(app)
+      .post('/api/articles/2/comments')
+      .send(postObj)
+      .expect(201)
+      .then(({ body: {comment} }) => {
+        expect(comment).toMatchObject({
+          comment_id: 19,
+          author: 'butter_bridge',
+          body: 'this is a test comment to add to article 2',
+          article_id: 2,
+          created_at: expect.any(String),
+          votes: 0,
+        });
+      });
+  });
+});
+

@@ -3,6 +3,7 @@ const {
   selectEndPoints,
   selectAllArticles,
   selectArticleById,
+  addCommentToArticleById,
 } = require('./models')
 
 exports.healthCheck = (req, res) => {
@@ -35,6 +36,15 @@ exports.getArticleById = (req, res, next) => {
 exports.getAllArticles = (req, res, next) => {
   selectAllArticles().then((articles)=>{
     res.status(200).send({ articles })
+  }).catch(next)
+}
+
+exports.postCommentToArticle = (req,res,next)=>{
+  const articleId = req.params.article_id
+  const post = req.body
+
+  addCommentToArticleById(articleId,post).then(([comment])=>{
+    res.status(201).send({ comment })
   }).catch(next)
 }
 

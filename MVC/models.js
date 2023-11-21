@@ -4,14 +4,14 @@ const fsPromise = require('fs/promises');
 exports.selectAllTopics = () => {
   return db.query('SELECT*FROM topics;').then(({ rows: topics }) => {
     return topics;
-  })
-}
+  });
+};
 
 exports.selectEndPoints = () => {
   return fsPromise.readFile(`${__dirname}/../endpoints.json`).then((data) => {
     return JSON.parse(data);
-  })
-}
+  });
+};
 
 exports.selectAllArticles = () => {
   return db
@@ -30,10 +30,9 @@ exports.selectAllArticles = () => {
   ORDER BY created_at DESC;`
     )
     .then(({ rows: articles }) => {
-      return articles
-    })
-}
-
+      return articles;
+    });
+};
 
 exports.selectArticleById = (id) => {
   return db
@@ -44,4 +43,12 @@ exports.selectArticleById = (id) => {
       }
       return article;
     });
+};
+
+exports.addCommentToArticleById = (id, {body, username}) => {
+  return db
+  .query('INSERT INTO comments ( article_id, author, body) VALUES ($1,$2,$3) RETURNING*;', [id,username,body]).then(({rows})=>{
+    return rows
+  })
+
 };
