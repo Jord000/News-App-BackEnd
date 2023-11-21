@@ -3,7 +3,9 @@ const {
   selectEndPoints,
   selectAllArticles,
   selectArticleById,
-} = require('./models')
+  selectCommentsById,
+  checkArticleId,
+} = require('./models');
 
 exports.healthCheck = (req, res) => {
   res.status(200).send('API is online and running');
@@ -33,10 +35,26 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-  selectAllArticles().then((articles)=>{
-    res.status(200).send({ articles })
-  }).catch(next)
-}
+  selectAllArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const articleId = req.params.article_id;
+  const promisesInput = [
+    selectArticleById(articleId),
+    selectCommentsById(articleId),
+  ];
+
+  Promise.all(promisesInput)
+    .then((results) => {
+      res.status(200).send({ comments: results[1] })
+    })
+    .catch(next);
+};
 
 exports.incorrectPath = (req, res) => {
   res.status(404).send({ msg: 'incorrect path - path not found' });

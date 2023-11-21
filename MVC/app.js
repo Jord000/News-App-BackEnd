@@ -5,7 +5,8 @@ const {
   incorrectPath,
   getEndPoints,
   getAllArticles,
-  getArticleById
+  getArticleById,
+  getCommentsByArticleId,
 } = require('./controllers')
 const { customError, internalError,sqlError } = require('./errors')
 
@@ -16,6 +17,7 @@ app.get('/api/topics', getAllTopics)
 app.get('/api', getEndPoints)
 app.get('/api/articles/:article_id',getArticleById)
 app.get('/api/articles',getAllArticles)
+app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
 
 app.all('/*', incorrectPath)

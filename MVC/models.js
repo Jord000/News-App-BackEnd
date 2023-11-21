@@ -4,14 +4,14 @@ const fsPromise = require('fs/promises');
 exports.selectAllTopics = () => {
   return db.query('SELECT*FROM topics;').then(({ rows: topics }) => {
     return topics;
-  })
-}
+  });
+};
 
 exports.selectEndPoints = () => {
   return fsPromise.readFile(`${__dirname}/../endpoints.json`).then((data) => {
     return JSON.parse(data);
-  })
-}
+  });
+};
 
 exports.selectAllArticles = () => {
   return db
@@ -30,10 +30,9 @@ exports.selectAllArticles = () => {
   ORDER BY created_at DESC;`
     )
     .then(({ rows: articles }) => {
-      return articles
-    })
-}
-
+      return articles;
+    });
+};
 
 exports.selectArticleById = (id) => {
   return db
@@ -43,5 +42,16 @@ exports.selectArticleById = (id) => {
         return Promise.reject({ status: 404, msg: 'Not Found' });
       }
       return article;
+    });
+};
+
+exports.selectCommentsById = (id) => {
+  return db
+    .query(
+      'SELECT*FROM comments WHERE article_id = $1  ORDER BY created_at ASC;',
+      [id]
+    )
+    .then(({ rows: comments }) => {
+      return comments;
     });
 };

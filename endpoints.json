@@ -1,15 +1,13 @@
 {
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api",
-  "queries": [],
-  "format": "JSON object",
-  "exampleResponse": {"GET /api":{}}
-
-
+    "queries": [],
+    "format": "JSON object",
+    "exampleResponse": { "GET /api": {} }
   },
-  "GET /api/healthcheck":{
+  "GET /api/healthcheck": {
     "description": "serves a response to show the server is online",
-    "queries":[],
+    "queries": [],
     "format": "string",
     "exampleResponse": "API is online and running"
   },
@@ -24,10 +22,11 @@
   "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
-    "format":"Object with a key of articles and value as an array of article objects",
+    "format": "Object with a key of articles and value as an array of article objects",
     "exampleResponse": {
       "articles": [
-        { "article_id": 10,
+        {
+          "article_id": 10,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
@@ -40,21 +39,31 @@
     }
   },
   "GET /api/articles/:article_id": {
-    "description":"Searches for a specific article by article_id",
-    "queries":[],
-    "format":"Object with a key of article{id} and value as object with article information",
-    "exampleResponse":{
-        "article5": {
+    "description": "Searches for a specific article by article_id",
+    "queries": [],
+    "format": "Object with a key of article{id} and value as object with article information",
+    "exampleResponse": {
+      "article5": {
         "article_id": 5,
         "title": "UNCOVERED: catspiracy to bring down democracy",
         "topic": "cats",
         "author": "rogersop",
         "body": "Bastet walks amongst us, and the cats are taking arms!",
-        "article_img_url":
-          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-      
-    }}
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "Searches for all comments by a specific article_id",
+    "queries": [],
+    "format": "Object with a key of Comments and value as an array of comment objects",
+    "exampleResponse": {
+      "comment_id": 1,
+      "votes": 20,
+      "created_at": "2018-05-30T15:59:13.341Z",
+      "author": "butter_bridge",
+      "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — on you it works.",
+      "article_id": 9
+    }
   }
-  
 }
-
