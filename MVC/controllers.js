@@ -4,8 +4,8 @@ const {
   selectAllArticles,
   selectArticleById,
   selectCommentsById,
-  checkArticleId,
   addCommentToArticleById,
+  selectAllUsers,
 } = require('./models');
 
 exports.healthCheck = (req, res) => {
@@ -64,6 +64,15 @@ exports.postCommentToArticle = (req,res,next)=>{
     res.status(201).send({ comment })
   }).catch(next)
 }
+
+exports.getAllUsers = (req, res, next) => {
+  selectAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch(next);
+};
+
 
 exports.incorrectPath = (req, res) => {
   res.status(404).send({ msg: 'incorrect path - path not found' });

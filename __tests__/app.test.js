@@ -156,7 +156,7 @@ describe('GET: /api/articles/:article_id/comments', () => {
             created_at: expect.any(String),
             author: expect.any(String),
             body: expect.any(String),
-            article_id: 3
+            article_id: 3,
           });
         });
         expect(comments).toBeSortedBy('created_at', { descending: false });
@@ -164,43 +164,42 @@ describe('GET: /api/articles/:article_id/comments', () => {
   });
   test('should handle non-existant ID request', () => {
     return request(app)
-    .get('/api/articles/99/comments')
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Not Found');
-    });
+      .get('/api/articles/99/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
   });
   test('should handle non-existant comments request', () => {
     return request(app)
-    .get('/api/articles/2/comments')
-    .expect(200)
-    .then(({ body }) => {
-      expect(body).toEqual({comments: []});
-    });
-  })
+      .get('/api/articles/2/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({ comments: [] });
+      });
+  });
   test('should handle incorrect id entry', () => {
     return request(app)
-    .get('/api/articles/incorrect/comments')
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Bad Request');
-    });
+      .get('/api/articles/incorrect/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
   });
 });
-
 
 describe('POST /api/articles/:article_id/comments', () => {
   const postObj = {
     username: 'butter_bridge',
     body: 'this is a test comment to add to article 2',
-  }
+  };
   const wrongPost1 = {
     username: 'thisIsNotAUser',
     body: 'this is a test comment',
-  }
+  };
   const wrongPost2 = {
     username: 'butter_bridge',
-  }
+  };
   test('should allow posting of a comment to an article by its id', () => {
     return request(app)
       .post('/api/articles/2/comments')
@@ -234,23 +233,41 @@ describe('POST /api/articles/:article_id/comments', () => {
       .then(({ body }) => {
         expect(body.msg).toBe('Bad Request');
       });
-  })
+  });
   test('should send correct error back when user not found', () => {
     return request(app)
-    .post('/api/articles/2/comments')
-    .send(wrongPost1)
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Not Found');
-    });
+      .post('/api/articles/2/comments')
+      .send(wrongPost1)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
   });
   test('should send error when body not included', () => {
     return request(app)
-    .post('/api/articles/2/comments')
-    .send(wrongPost2)
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Bad Request');
-    });
+      .post('/api/articles/2/comments')
+      .send(wrongPost2)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+});
+
+describe('GET /api/users', () => {
+  test('should return all users on an object of users', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+          expect(user.avatar_url).toMatch(new RegExp('^https:?'))
+        });
+      });
   });
 });

@@ -64,3 +64,9 @@ exports.addCommentToArticleById = (id, {body, username}) => {
   })
 
 };
+
+exports.selectAllUsers = ()=>{
+  return db.query('SELECT*FROM users;').then(({ rows: users }) => {
+    return users;
+  });
+}
