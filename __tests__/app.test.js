@@ -156,7 +156,7 @@ describe('GET: /api/articles/:article_id/comments', () => {
             created_at: expect.any(String),
             author: expect.any(String),
             body: expect.any(String),
-            article_id: expect.any(Number)
+            article_id: 3
           });
         });
         expect(comments).toBeSortedBy('created_at', { descending: false });
@@ -176,6 +176,14 @@ describe('GET: /api/articles/:article_id/comments', () => {
     .expect(200)
     .then(({ body }) => {
       expect(body).toEqual({comments: []});
+    });
+  })
+  test('should handle incorrect id entry', () => {
+    return request(app)
+    .get('/api/articles/incorrect/comments')
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toEqual('Bad Request');
     });
   });
 });
