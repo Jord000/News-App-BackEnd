@@ -260,7 +260,6 @@ describe('GET /api/comments', () => {
       .get('/api/comments')
       .expect(200)
       .then(({ body: { comments } }) => {
-        console.log(comments);
         comments.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
@@ -307,3 +306,4 @@ describe('DELETE /api/comments/:comment_id', () => {
       });
   });
 });
+
