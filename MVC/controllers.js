@@ -3,8 +3,11 @@ const {
   selectEndPoints,
   selectAllArticles,
   selectArticleById,
-  selectCommentsById,
+  selectCommentsByArticleId,
   addCommentToArticleById,
+  deleteOneComment,
+  selectAllComments,
+  selectCommentById,
   selectAllUsers,
 } = require('./models');
 
@@ -47,12 +50,32 @@ exports.getCommentsByArticleId = (req, res, next) => {
   const articleId = req.params.article_id;
   const promisesInput = [
     selectArticleById(articleId),
-    selectCommentsById(articleId),
+    selectCommentsByArticleId(articleId),
   ];
 
   Promise.all(promisesInput)
     .then((results) => {
-      res.status(200).send({ comments: results[1] })
+      res.status(200).send({ comments: results[1] });
+    })
+    .catch(next);
+};
+
+exports.postCommentToArticle = (req, res, next) => {
+  const articleId = req.params.article_id;
+  const post = req.body;
+  addCommentToArticleById(articleId, post)
+    .then(([comment]) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.deleteCommentById = (req, res, next) => {
+  const commentId = req.params.comment_id;
+  const promiseInput = [selectCommentById(commentId), deleteOneComment(commentId)];
+  Promise.all(promiseInput)
+    .then((promiseResults) => {
+      res.status(204).send();
     })
     .catch(next);
 };
@@ -73,6 +96,11 @@ exports.getAllUsers = (req, res, next) => {
     .catch(next);
 };
 
+exports.getAllComments = (req, res, next) => {
+  selectAllComments().then((comments) => {
+    res.status(200).send({ comments });
+  });
+};
 
 exports.incorrectPath = (req, res) => {
   res.status(404).send({ msg: 'incorrect path - path not found' });

@@ -66,6 +66,20 @@
       "article_id": 9
     }
   },
+  "GET /api/comments": {
+    "description": "Searches for all comments",
+    "queries": [],
+    "format": "Object with a key of Comments and value as an array of comment objects",
+    "exampleResponse": {
+      "comment_id": 1,
+      "votes": 20,
+      "created_at": "2018-05-30T15:59:13.341Z",
+      "author": "butter_bridge",
+      "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — on you it works.",
+      "article_id": 9
+    }
+  },
+
   "GET /api/users": {
     "description": "Searches for all users",
     "queries": [],
@@ -89,5 +103,11 @@
       "votes": 0,
       "created_at": "2023-11-21T14:13:17.328Z"
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes a comment based on comment_id",
+    "queries": [],
+    "format": "comment_id required to delete the object",
+    "exampleResponse": {}
   }
 }
