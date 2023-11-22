@@ -1,5 +1,6 @@
 const db = require('../db/connection');
 const fsPromise = require('fs/promises');
+const {articleCategoryCheck} = require('./mvc-utils')
 
 exports.selectAllTopics = () => {
   return db.query('SELECT*FROM topics;').then(({ rows: topics }) => {
@@ -13,10 +14,10 @@ exports.selectEndPoints = () => {
   });
 };
 
-exports.selectAllArticles = () => {
-  return db
-    .query(
-      `SELECT 
+exports.selectAllArticles = (query) => {
+  const queryKey = Object.keys(query)[0]
+  let selectArray = undefined
+  let selectString = `SELECT 
   articles.article_id,
   articles.title,
   articles.topic,
@@ -24,14 +25,22 @@ exports.selectAllArticles = () => {
   articles.created_at,
   articles.votes,
   article_img_url,COUNT(comment_id) AS comment_count
-  FROM articles 
-  LEFT JOIN comments ON articles.article_id=comments.article_id 
+  FROM articles
+  LEFT JOIN comments ON articles.article_id=comments.article_id`
+
+  const defaultEndString = `
   GROUP BY articles.article_id
   ORDER BY created_at DESC;`
-    )
-    .then(({ rows: articles }) => {
-      return articles;
-    });
+
+  if(queryKey){
+    articleCategoryCheck(queryKey)
+    selectArray = [`${query[queryKey]}`]
+    selectString = `${selectString} WHERE articles.${queryKey} = $1 ${defaultEndString}`
+}
+  else{selectString+=defaultEndString}
+  return db.query(selectString,selectArray).then(({ rows: articles }) => {
+    return articles;
+  });
 };
 
 exports.selectArticleById = (id) => {
@@ -56,11 +65,13 @@ exports.selectCommentsById = (id) => {
     });
 };
 
-exports.addCommentToArticleById = (id, {body, username}) => {
+exports.addCommentToArticleById = (id, { body, username }) => {
   return db
-  .query('INSERT INTO comments ( article_id, author, body) VALUES ($1,$2,$3) RETURNING*;', [id,username,body]).then(({rows})=>{
-
-    return rows
-  })
-
+    .query(
+      'INSERT INTO comments ( article_id, author, body) VALUES ($1,$2,$3) RETURNING*;',
+      [id, username, body]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
 };
