@@ -10,6 +10,7 @@ const {
   selectCommentById,
   selectAllUsers,
   incVotesById,
+  selectTopicBySlug,
 } = require('./models');
 
 exports.healthCheck = (req, res) => {
@@ -40,12 +41,21 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-  const query = req.query
-  selectAllArticles(query)
-    .then((articles) => {
-      res.status(200).send({ articles });
-    })
-    .catch(next);
+  const { topic } = req.query;
+  
+  if (topic) {
+    Promise.all([selectTopicBySlug(topic), selectAllArticles(topic)])
+      .then(([topics, articles]) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  } else {
+    selectAllArticles()
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  }
 };
 
 exports.getCommentsByArticleId = (req, res, next) => {
@@ -119,9 +129,11 @@ exports.getAllUsers = (req, res, next) => {
 };
 
 exports.getAllComments = (req, res, next) => {
-  selectAllComments().then((comments) => {
-    res.status(200).send({ comments });
-  }).catch(next);
+  selectAllComments()
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
 };
 
 exports.incorrectPath = (req, res) => {
