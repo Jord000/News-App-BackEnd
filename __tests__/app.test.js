@@ -408,6 +408,18 @@ describe('GET /api/users', () => {
   });
 });
 
+describe('GET /api/articles/:article_id - comment_count', () => {
+  test('articles searched by ID should also include the comment_count', () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then(({ body:{article1} }) => {
+       expect(article1.comment_count).toBe(11);
+      });
+  });
+});
+
+
 describe('GET topic query on articles eg /api/articles?topic=cats', () => {
   test('should return all articles of a topic', () => {
     return request(app)
