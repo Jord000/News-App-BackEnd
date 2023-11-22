@@ -40,7 +40,7 @@
   },
   "GET /api/articles/:article_id": {
     "description": "Searches for a specific article by article_id",
-    "queries": [],
+    "queries": ["comment_count"],
     "format": "Object with a key of article{id} and value as object with article information",
     "exampleResponse": {
       "article5": {
@@ -49,7 +49,8 @@
         "topic": "cats",
         "author": "rogersop",
         "body": "Bastet walks amongst us, and the cats are taking arms!",
-        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        "comment_count": "11"
       }
     }
   },
