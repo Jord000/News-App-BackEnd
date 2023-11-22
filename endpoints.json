@@ -66,8 +66,31 @@
       "article_id": 9
     }
   },
+  "GET /api/comments": {
+    "description": "Searches for all comments",
+    "queries": [],
+    "format": "Object with a key of Comments and value as an array of comment objects",
+    "exampleResponse": {
+      "comment_id": 1,
+      "votes": 20,
+      "created_at": "2018-05-30T15:59:13.341Z",
+      "author": "butter_bridge",
+      "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — on you it works.",
+      "article_id": 9
+    }
+  },
 
-     
+  "GET /api/users": {
+    "description": "Searches for all users",
+    "queries": [],
+    "format": "Object with a key of users and value as an array of user objects",
+    "exampleResponse": {
+      "username": "lurker",
+      "name": "do_nothing",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+    }
+  },
+
   "POST /api/articles/:article_id/comments": {
     "description": "Posts a JSON object containing a comment to the specific article_id in the path",
     "queries": [],
@@ -79,6 +102,27 @@
       "author": "butter_bridge",
       "votes": 0,
       "created_at": "2023-11-21T14:13:17.328Z"
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes a comment based on comment_id",
+    "queries": [],
+    "format": "comment_id required to delete the object",
+    "exampleResponse": {}
+  },
+  "PATCH: /api/articles/:article_id": {
+    "description": "allows for incrementing of votes",
+    "queries": [],
+    "format": "Object with a key of inc_votes and number value to increment by eg 10 || -20",
+    "exampleResponse": {
+      "article_id": 9,
+      "title": "UNCOVERED: catspiracy to bring down democracy",
+      "topic": "cats",
+      "author": "rogersop",
+      "body": "Bastet walks amongst us, and the cats are taking arms!",
+      "created_at": 1596464040000,
+      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      "votes": 20
     }
   }
 }

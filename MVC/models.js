@@ -49,12 +49,11 @@ exports.selectArticleById = (id) => {
     .then(({ rows: [article] }) => {
       if (!article) {
         return Promise.reject({ status: 404, msg: 'Not Found' });
-      }
-      return article;
+      } else return article;
     });
 };
 
-exports.selectCommentsById = (id) => {
+exports.selectCommentsByArticleId = (id) => {
   return db
     .query(
       'SELECT*FROM comments WHERE article_id = $1  ORDER BY created_at ASC;',
@@ -73,5 +72,41 @@ exports.addCommentToArticleById = (id, { body, username }) => {
     )
     .then(({ rows }) => {
       return rows;
+    });
+};
+
+exports.deleteOneComment = (id) => {
+  return db.query('DELETE FROM comments WHERE comment_id = $1;', [id]);
+};
+
+exports.selectAllComments = () => {
+  return db.query('SELECT*FROM comments;').then(({ rows: comments }) => {
+    return comments;
+  });
+};
+
+exports.selectCommentById = (id) => {
+  return db
+    .query('SELECT*FROM comments WHERE comment_id = $1;', [id])
+    .then(({ rows: [comments] }) => {
+      if (!comments) {
+        return Promise.reject({ status: 404, msg: 'Not Found' });
+      } else return comments;
+    });
+};
+
+exports.selectAllUsers = () => {
+  return db.query('SELECT*FROM users;').then(({ rows: users }) => {
+    return users;
+  });
+};
+exports.incVotesById = (id, inc) => {
+  return db
+    .query(
+      'UPDATE articles SET votes = votes + $2 WHERE article_id = $1 RETURNING*;',
+      [id, inc]
+    )
+    .then(({ rows: article }) => {
+      return article;
     });
 };
