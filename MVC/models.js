@@ -67,7 +67,6 @@ exports.addCommentToArticleById = (id, { body, username }) => {
 };
 
 exports.deleteOneComment = (id) => {
-  console.log(id,'function online')
   return db.query('DELETE FROM comments WHERE comment_id = $1;', [id]);
 };
 
