@@ -47,11 +47,11 @@ exports.selectArticleById = (id) => {
       [id]
     )
     .then(({ rows: [article] }) => {
+      article.comment_count = Number(article.comment_count)
       if (!article) {
         return Promise.reject({ status: 404, msg: 'Not Found' });
-      } else {
-        return article;
       }
+      return article;
     });
 };
 

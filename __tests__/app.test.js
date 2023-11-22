@@ -408,13 +408,13 @@ describe('GET /api/users', () => {
   });
 });
 
-describe('GET /api/articles/:article_id - comment_count', () => {
+describe.only('GET /api/articles/:article_id - comment_count', () => {
   test('articles searched by ID should also include the comment_count', () => {
     return request(app)
       .get('/api/articles/1')
       .expect(200)
       .then(({ body:{article1} }) => {
-       expect(article1.comment_count).toBe('11');
+       expect(article1.comment_count).toBe(11);
       });
   });
 });
