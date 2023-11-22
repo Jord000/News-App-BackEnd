@@ -13,10 +13,35 @@ exports.selectEndPoints = () => {
   });
 };
 
-exports.selectAllArticles = () => {
+exports.selectTopicBySlug = (topic) => {
   return db
-    .query(
-      `SELECT 
+    .query('SELECT*FROM topics WHERE slug = $1;', [topic])
+    .then(({ rows: [topics] }) => {
+      if (!topics) {
+        return Promise.reject({ status: 404, msg: 'Not Found' });
+      } else return topics;
+    });
+};
+
+exports.selectAllArticles = (topic, sort_by, order) => {
+  const acceptedSorts = [
+    'author',
+    'title',
+    'article_id',
+    'topic',
+    'created_at',
+    'votes',
+    'article_img_url',
+    'comment_count',
+  ];
+  if (sort_by && !acceptedSorts.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
+  }
+  if (order !== 'ASC' && order !== 'DESC' && order) {
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
+  }
+  let selectArray = undefined;
+  let selectString = `SELECT 
   articles.article_id,
   articles.title,
   articles.topic,
@@ -24,14 +49,28 @@ exports.selectAllArticles = () => {
   articles.created_at,
   articles.votes,
   article_img_url,COUNT(comment_id) AS comment_count
-  FROM articles 
-  LEFT JOIN comments ON articles.article_id=comments.article_id 
-  GROUP BY articles.article_id
-  ORDER BY created_at DESC;`
-    )
-    .then(({ rows: articles }) => {
-      return articles;
-    });
+  FROM articles
+  LEFT JOIN comments ON articles.article_id=comments.article_id`;
+
+  let defaultgroup = `
+  GROUP BY articles.article_id `;
+
+  let defaultSort = ` ORDER BY created_at DESC;`;
+
+  if (topic) {
+    selectArray = [`${topic}`];
+    selectString =
+      selectString + ' WHERE articles.topic = $1' + defaultgroup + defaultSort;
+  } else if (sort_by) {
+    selectString += defaultgroup += ` ORDER BY ${sort_by} DESC;`;
+  } else if (order === 'ASC') {
+    selectString += defaultgroup += ` ORDER BY created_at ${order};`;
+  } else {
+    selectString += defaultgroup += defaultSort;
+  }
+  return db.query(selectString, selectArray).then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.selectArticleById = (id) => {
@@ -47,8 +86,9 @@ exports.selectArticleById = (id) => {
       [id]
     )
     .then(({ rows: [article] }) => {
-      if(article){article.comment_count = Number(article.comment_count)}
-      else if (!article) {
+      if (article) {
+        article.comment_count = Number(article.comment_count);
+      } else if (!article) {
         return Promise.reject({ status: 404, msg: 'Not Found' });
       }
       return article;

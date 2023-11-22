@@ -413,9 +413,51 @@ describe('GET /api/articles/:article_id - comment_count', () => {
     return request(app)
       .get('/api/articles/1')
       .expect(200)
-      .then(({ body:{article1} }) => {
-       expect(article1.comment_count).toBe(11);
+      .then(({ body: { article1 } }) => {
+        expect(article1.comment_count).toBe(11);
       });
+  });
+});
+describe('GET /api/articles sorting quries sort_by and order', () => {
+  test('allows a sort_by query eg /api/articles?sort_by=votes ', () => {
+    return request(app)
+      .get('/api/articles?sort_by=votes')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy('votes', { descending: true });
+      });
+  });
+  test('allows a order query eg /api/articles?order=ASC ', () => {
+    return request(app)
+      .get('/api/articles?order=ASC')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy('created_at', { descending: false });
+      });
+  });
+  test('should provide right error when passed incorrect catagory', () => {
+    return request(app)
+      .get('/api/articles?sort_by=error')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+  test('should provide error when passed incorrect order', () => {
+    return request(app)
+    .get('/api/articles?order=error')
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Bad Request');
+    });
+  });
+  test('should provide error when passed invalid query', () => {
+    return request(app)
+    .get('/api/articles?invalid=error')
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe('Bad Request');
+    });
   });
 });
 
