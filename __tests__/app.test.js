@@ -413,10 +413,34 @@ describe('GET topic query on articles eg /api/articles?topic=cats', () => {
     return request(app)
       .get('/api/articles?topic=cats')
       .expect(200)
-      .then(({ body: { articles } }) => {
-        articles.forEach((article) => {
+      .then(({ body:{articles}}) => {
+           articles.forEach((article) => {
           expect(article.topic).toBe('cats');
         });
+      });
+  });
+  test('should give back empty object with topic that doesnt exist', () => {
+    return request(app)
+      .get('/api/articles?topic=neverheardofit')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual([]);
+      });
+  });
+  test('should handle error with category that doesnt exist', () => {
+    return request(app)
+      .get('/api/articles?thisisanerror')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
+  });
+  test('should handle error with category that doesnt exist', () => {
+    return request(app)
+      .get('/api/articles?incorrect=cats')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
       });
   });
 });

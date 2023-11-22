@@ -1,6 +1,6 @@
 const db = require('../db/connection');
 const fsPromise = require('fs/promises');
-const {articleCategoryCheck} = require('./mvc-utils')
+const { articleCategoryCheck } = require('./mvc-utils');
 
 exports.selectAllTopics = () => {
   return db.query('SELECT*FROM topics;').then(({ rows: topics }) => {
@@ -15,8 +15,9 @@ exports.selectEndPoints = () => {
 };
 
 exports.selectAllArticles = (query) => {
-  const queryKey = Object.keys(query)[0]
-  let selectArray = undefined
+  const queryKey = Object.keys(query)[0];
+  let selectArray = undefined;
+  let promiseInput = [];
   let selectString = `SELECT 
   articles.article_id,
   articles.title,
@@ -26,20 +27,23 @@ exports.selectAllArticles = (query) => {
   articles.votes,
   article_img_url,COUNT(comment_id) AS comment_count
   FROM articles
-  LEFT JOIN comments ON articles.article_id=comments.article_id`
+  LEFT JOIN comments ON articles.article_id=comments.article_id`;
 
   const defaultEndString = `
   GROUP BY articles.article_id
-  ORDER BY created_at DESC;`
+  ORDER BY created_at DESC;`;
 
-  if(queryKey){
-    articleCategoryCheck(queryKey)
-    selectArray = [`${query[queryKey]}`]
-    selectString = `${selectString} WHERE articles.${queryKey} = $1 ${defaultEndString}`
-}
-  else{selectString+=defaultEndString}
-  return db.query(selectString,selectArray).then(({ rows: articles }) => {
-    return articles;
+  if (queryKey) {
+    selectArray = [`${query[queryKey]}`];
+    selectString = `${selectString} WHERE articles.${queryKey} = $1 ${defaultEndString}`;
+    promiseInput.push(db.query(selectString, selectArray));
+    promiseInput.push(articleCategoryCheck(queryKey));
+  } else {
+    selectString += defaultEndString;
+    promiseInput.push(db.query(selectString, selectArray));
+  }
+  return Promise.all(promiseInput).then(([dbQueryResult, result1]) => {
+    return dbQueryResult.rows;
   });
 };
 

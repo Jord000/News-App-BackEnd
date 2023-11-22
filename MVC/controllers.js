@@ -121,7 +121,7 @@ exports.getAllUsers = (req, res, next) => {
 exports.getAllComments = (req, res, next) => {
   selectAllComments().then((comments) => {
     res.status(200).send({ comments });
-  });
+  }).catch(next);
 };
 
 exports.incorrectPath = (req, res) => {
