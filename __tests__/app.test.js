@@ -408,7 +408,7 @@ describe('GET /api/users', () => {
   });
 });
 
-describe.only('GET /api/articles/:article_id - comment_count', () => {
+describe('GET /api/articles/:article_id - comment_count', () => {
   test('articles searched by ID should also include the comment_count', () => {
     return request(app)
       .get('/api/articles/1')
