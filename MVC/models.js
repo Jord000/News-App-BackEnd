@@ -86,11 +86,11 @@ exports.selectCommentById = (id) => {
     });
 };
 
-exports.selectAllUsers = ()=>{
+exports.selectAllUsers = () => {
   return db.query('SELECT*FROM users;').then(({ rows: users }) => {
     return users;
   });
-}
+};
 exports.incVotesById = (id, inc) => {
   return db
     .query(

@@ -73,11 +73,13 @@ exports.postCommentToArticle = (req, res, next) => {
 
 exports.deleteCommentById = (req, res, next) => {
   const commentId = req.params.comment_id;
-  const promiseInput = [selectCommentById(commentId), deleteOneComment(commentId)];
+  const promiseInput = [
+    selectCommentById(commentId),
+    deleteOneComment(commentId),
+  ];
   Promise.all(promiseInput)
     .then((promiseResults) => {
       res.status(204).send();
-      res.status(200).send({ comments: results[1] });
     })
     .catch(next);
 };
@@ -91,9 +93,8 @@ exports.incrementVotes = (req, res, next) => {
   ];
 
   Promise.all(promisesInput)
-    .then(([result0,result1]) => {
-      console.log(result1)
-      res.status(200).send({article: result1});
+    .then(([result0, result1]) => {
+      res.status(200).send({ article: result1 });
     })
     .catch(next);
 };

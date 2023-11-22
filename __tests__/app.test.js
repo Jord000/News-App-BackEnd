@@ -390,7 +390,6 @@ describe('DELETE /api/comments/:comment_id', () => {
   });
 });
 
-
 describe('GET /api/users', () => {
   test('should return all users on an object of users', () => {
     return request(app)
@@ -403,7 +402,7 @@ describe('GET /api/users', () => {
             name: expect.any(String),
             avatar_url: expect.any(String),
           });
-          expect(user.avatar_url).toMatch(new RegExp('^https:?'))
+          expect(user.avatar_url).toMatch(new RegExp('^https:?'));
         });
       });
   });
