@@ -326,4 +326,13 @@ describe('PATCH: /api/articles/:article_id', () => {
         }
       );
   });
+  test('Should send correct response when given non-existent but valid endpoint', () => {
+    return request(app)
+      .patch('/api/articles/99')
+      .send(incVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
+  });
 });

@@ -4,7 +4,6 @@ const {
   selectAllArticles,
   selectArticleById,
   selectCommentsById,
-  checkArticleId,
   addCommentToArticleById,
   incVotesById,
 } = require('./models');
@@ -61,20 +60,28 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.incrementVotes = (req, res, next) => {
   const articleId = req.params.article_id;
   const incAmount = req.body.inc_votes;
-  incVotesById(articleId, incAmount)
-    .then((article) => {
-      res.status(200).send({ article });
+  const promisesInput = [
+    selectArticleById(articleId),
+    incVotesById(articleId, incAmount),
+  ];
+
+  Promise.all(promisesInput)
+    .then(([result0,result1]) => {
+      console.log(result1)
+      res.status(200).send({article: result1});
     })
     .catch(next);
 };
 
-exports.postCommentToArticle = (req,res,next)=>{
-  const articleId = req.params.article_id
-  const post = req.body
-  addCommentToArticleById(articleId,post).then(([comment])=>{
-    res.status(201).send({ comment })
-  }).catch(next)
-}
+exports.postCommentToArticle = (req, res, next) => {
+  const articleId = req.params.article_id;
+  const post = req.body;
+  addCommentToArticleById(articleId, post)
+    .then(([comment]) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
 
 exports.incorrectPath = (req, res) => {
   res.status(404).send({ msg: 'incorrect path - path not found' });
