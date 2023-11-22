@@ -336,3 +336,75 @@ describe('PATCH: /api/articles/:article_id', () => {
       });
   });
 });
+
+describe('GET /api/comments', () => {
+  test('should return all comments', () => {
+    return request(app)
+      .get('/api/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('should delete a given comment by the comment_id and respond with 204 no content.', () => {
+    let startingNumOfComments = 18;
+    return request(app)
+      .delete('/api/comments/1')
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .get('/api/comments')
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments.length).toBeLessThan(startingNumOfComments);
+          });
+      });
+  });
+  test('should get correct response for incorrect id', () => {
+    return request(app)
+      .delete('/api/comments/99')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
+  });
+  test('should handle bad requests', () => {
+    return request(app)
+      .delete('/api/comments/whoopsie')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+});
+
+
+describe('GET /api/users', () => {
+  test('should return all users on an object of users', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+          expect(user.avatar_url).toMatch(new RegExp('^https:?'))
+        });
+      });
+  });
+});
