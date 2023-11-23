@@ -175,3 +175,16 @@ exports.incCommentVotesById = (id,inc)=>{
       return comment
     })
 }
+
+exports.postArticletoArticles = (articlePost)=>{
+
+  const {author,title,body,topic} = articlePost
+  return db
+  .query(
+    'INSERT INTO articles (author, title,body,topic) VALUES ($1,$2,$3,$4) RETURNING articles.article_id;',
+    [author,title, body, topic]
+  )
+  .then(({rows:[{article_id}]}) => {
+  return article_id
+  })
+}

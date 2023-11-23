@@ -13,6 +13,7 @@ const {
   incCommentVotesById,
   selectTopicBySlug,
   selectUsername,
+  postArticletoArticles,
 } = require('./models')
 
 exports.healthCheck = (req, res) => {
@@ -155,6 +156,17 @@ exports.getAllComments = (req, res, next) => {
   selectAllComments()
     .then((comments) => {
       res.status(200).send({ comments })
+    })
+    .catch(next)
+}
+
+exports.postAnArticle = (req, res, next) => {
+  const articlePost = req.body
+  postArticletoArticles(articlePost)
+    .then((article_id) => {
+      selectArticleById(article_id).then((article) => {
+        res.status(201).send({ article })
+      })
     })
     .catch(next)
 }

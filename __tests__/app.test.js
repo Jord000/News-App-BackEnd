@@ -256,6 +256,7 @@ describe('PATCH: /api/articles/:article_id', () => {
   const incVotes = { inc_votes: 20 }
   const wrongVote = { notcorrect: 'incorrect' }
   const reduceVotes = { inc_votes: -200 }
+  const wrongData = { inc_votes: 'wrong' }
   test('should be able to update an article votes by its id', () => {
     return request(app)
       .patch('/api/articles/5')
@@ -331,6 +332,15 @@ describe('PATCH: /api/articles/:article_id', () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe('Not Found')
+      })
+  })
+  test('should send correct error back when patch object sends wrong data', () => {
+    return request(app)
+      .patch('/api/articles/2')
+      .send(wrongData)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
       })
   })
 })
@@ -550,6 +560,7 @@ describe('PATCH /api/comments/:comment_id', () => {
   const vote1 = { inc_votes: 1 }
   const vote2 = { inc_votes: -1 }
   const wrongVote = { wrong: 1 }
+  const wrongData = { inc_votes: 'what' }
   test('should allow the changing of votes to comment by comment id', () => {
     return request(app)
       .patch('/api/comments/3')
@@ -612,4 +623,49 @@ describe('PATCH /api/comments/:comment_id', () => {
         expect(body.msg).toBe('Bad Request')
       })
   })
+  test('should send correct error back when patch object sends wrong data', () => {
+    return request(app)
+      .patch('/api/comments/2')
+      .send(wrongData)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
 })
+
+describe('POST allows posting of articles /api/articles ', () => {
+  const newArticle = {
+    author: 'butter_bridge',
+    title: 'this is a new article',
+    body: "well isn't it nice to get a new article in here",
+    topic: 'paper',
+  }
+  test('should allow posting of an article', () => {
+    return request(app)
+      .post('/api/articles')
+      .send(newArticle)
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article).toMatchObject({
+          article_id: 14,
+          author: 'butter_bridge',
+          title: 'this is a new article',
+          body: "well isn't it nice to get a new article in here",
+          topic: 'paper',
+          votes: 0,
+          created_at: expect.any(String),
+          comment_count: 0,
+          article_img_url:
+            'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700',
+        })
+      })
+  })
+})
+
+/* POST /api/articles
+Description
+
+Consider what errors could occur with this endpoint, and make sure to test for them.
+
+Remember to add a description of this endpoint to your /api endpoint. */
