@@ -21,9 +21,10 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "title", "sort_by", "order"],
+    "queries": ["author", "topic", "title", "sort_by", "order","limit","p"],
     "format": "Object with a key of articles and value as an array of article objects",
     "exampleResponse": {
+      "total_count": 200,
       "articles": [
         {
           "article_id": 10,
