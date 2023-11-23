@@ -72,11 +72,14 @@ exports.getAllArticles = (req, res, next) => {
 }
 
 exports.getCommentsByArticleId = (req, res, next) => {
+  const{limit,p} = req.query
   const articleId = req.params.article_id
   const promisesInput = [
     selectArticleById(articleId),
-    selectCommentsByArticleId(articleId),
+    selectCommentsByArticleId(articleId,limit,p),
   ]
+
+
 
   Promise.all(promisesInput)
     .then((results) => {

@@ -709,7 +709,7 @@ describe('GET /api/articles/pagination and limit', () => {
         expect(body.msg).toBe('Bad Request - limit too high max 50')
       })
   })
-  test('should prevent impropr input', () => {
+  test('should prevent improper input', () => {
     return request(app)
       .get('/api/articles?limit=criticaldamage')
       .expect(400)
@@ -721,7 +721,7 @@ describe('GET /api/articles/pagination and limit', () => {
     return request(app)
       .get('/api/articles?p=2')
       .expect(200)
-      .then(({ body :{articles, total_count}}) => {
+      .then(({ body: { articles, total_count } }) => {
         expect(articles.length).toBe(3)
         expect(articles[2]).toEqual({
           article_id: 7,
@@ -733,20 +733,36 @@ describe('GET /api/articles/pagination and limit', () => {
           title: 'Z',
           topic: 'mitch',
           votes: 0,
-        }
-    )
-    expect(total_count).toBe(13)
+        })
+        expect(total_count).toBe(13)
       })
   })
   test('should error when the page number is too high', () => {
-      return request(app)
-        .get('/api/articles?p=100')
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe('Bad Request')
-        })
-    })
-  });
+    return request(app)
+      .get('/api/articles?p=100')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+})
 
-
+describe('GET /api/articles/:article_id/comments pagination and limit ', () => {
+  test('should allow a limit to be set on the return', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=2')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toEqual(2)
+      })
+  })
+  test('should allow a pagination to be set', () => {
+    return request(app)
+      .get('/api/articles/1/comments?p=2')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toEqual(1)
+      })
+  })
+})
 

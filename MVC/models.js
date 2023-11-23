@@ -119,15 +119,25 @@ exports.selectArticleById = (id) => {
     })
 }
 
-exports.selectCommentsByArticleId = (id) => {
-  return db
-    .query(
-      'SELECT*FROM comments WHERE article_id = $1  ORDER BY created_at ASC;',
-      [id]
-    )
-    .then(({ rows: comments }) => {
-      return comments
-    })
+exports.selectCommentsByArticleId = (id, limit, p) => {
+  let selectString = 'SELECT*FROM comments WHERE article_id = $1'
+  let selectArray = [id]
+  let defaultOrder = ` ORDER BY created_at ASC`
+  let defaultLimit = ` LIMIT 10;`
+
+  if (limit) {
+    selectArray.push(limit)
+    selectString += defaultOrder += ` LIMIT $2;`
+  }else if (p) {
+    selectArray.push(p - 1)
+    selectString += defaultOrder +=` LIMIT 10 OFFSET 10*$2;`
+  } 
+  else {
+    selectString += defaultOrder += defaultLimit
+  }
+  return db.query(selectString, selectArray).then(({ rows: comments }) => {
+    return comments
+  })
 }
 
 exports.addCommentToArticleById = (id, { body, username }) => {
