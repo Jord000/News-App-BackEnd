@@ -461,3 +461,32 @@ describe('GET /api/articles sorting quries sort_by and order', () => {
   });
 });
 
+
+describe('GET topic query on articles eg /api/articles?topic=cats', () => {
+  test('should return all articles of a topic', () => {
+    return request(app)
+      .get('/api/articles?topic=cats')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        articles.forEach((article) => {
+          expect(article.topic).toBe('cats');
+        });
+      });
+  });
+  test('should give back empty object for a topic that isnt used yet', () => {
+    return request(app)
+      .get('/api/articles?topic=empty')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual([]);
+      });
+  });
+  test('should give back error for a topic is invalid', () => {
+    return request(app)
+      .get('/api/articles?topic=invalidentry')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found');
+      });
+  });
+});

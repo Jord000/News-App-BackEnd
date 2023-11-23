@@ -109,15 +109,7 @@ exports.incrementVotes = (req, res, next) => {
     .catch(next);
 };
 
-exports.postCommentToArticle = (req, res, next) => {
-  const articleId = req.params.article_id;
-  const post = req.body;
-  addCommentToArticleById(articleId, post)
-    .then(([comment]) => {
-      res.status(201).send({ comment });
-    })
-    .catch(next);
-};
+
 
 exports.getAllUsers = (req, res, next) => {
   selectAllUsers()
@@ -128,9 +120,11 @@ exports.getAllUsers = (req, res, next) => {
 };
 
 exports.getAllComments = (req, res, next) => {
-  selectAllComments().then((comments) => {
-    res.status(200).send({ comments });
-  });
+  selectAllComments()
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
 };
 
 exports.incorrectPath = (req, res) => {

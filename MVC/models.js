@@ -1,17 +1,17 @@
-const db = require('../db/connection');
-const fsPromise = require('fs/promises');
+const db = require('../db/connection')
+const fsPromise = require('fs/promises')
 
 exports.selectAllTopics = () => {
   return db.query('SELECT*FROM topics;').then(({ rows: topics }) => {
-    return topics;
-  });
-};
+    return topics
+  })
+}
 
 exports.selectEndPoints = () => {
   return fsPromise.readFile(`${__dirname}/../endpoints.json`).then((data) => {
-    return JSON.parse(data);
-  });
-};
+    return JSON.parse(data)
+  })
+}
 
 exports.selectTopicBySlug = (topic) => {
   return db
@@ -91,9 +91,9 @@ exports.selectArticleById = (id) => {
       } else if (!article) {
         return Promise.reject({ status: 404, msg: 'Not Found' });
       }
-      return article;
-    });
-};
+      return article
+    })
+}
 
 exports.selectCommentsByArticleId = (id) => {
   return db
@@ -102,9 +102,9 @@ exports.selectCommentsByArticleId = (id) => {
       [id]
     )
     .then(({ rows: comments }) => {
-      return comments;
-    });
-};
+      return comments
+    })
+}
 
 exports.addCommentToArticleById = (id, { body, username }) => {
   return db
@@ -113,35 +113,35 @@ exports.addCommentToArticleById = (id, { body, username }) => {
       [id, username, body]
     )
     .then(({ rows }) => {
-      return rows;
-    });
-};
+      return rows
+    })
+}
 
 exports.deleteOneComment = (id) => {
-  return db.query('DELETE FROM comments WHERE comment_id = $1;', [id]);
-};
+  return db.query('DELETE FROM comments WHERE comment_id = $1;', [id])
+}
 
 exports.selectAllComments = () => {
   return db.query('SELECT*FROM comments;').then(({ rows: comments }) => {
-    return comments;
-  });
-};
+    return comments
+  })
+}
 
 exports.selectCommentById = (id) => {
   return db
     .query('SELECT*FROM comments WHERE comment_id = $1;', [id])
     .then(({ rows: [comments] }) => {
       if (!comments) {
-        return Promise.reject({ status: 404, msg: 'Not Found' });
-      } else return comments;
-    });
-};
+        return Promise.reject({ status: 404, msg: 'Not Found' })
+      } else return comments
+    })
+}
 
 exports.selectAllUsers = () => {
   return db.query('SELECT*FROM users;').then(({ rows: users }) => {
-    return users;
-  });
-};
+    return users
+  })
+}
 exports.incVotesById = (id, inc) => {
   return db
     .query(
@@ -149,6 +149,6 @@ exports.incVotesById = (id, inc) => {
       [id, inc]
     )
     .then(({ rows: article }) => {
-      return article;
-    });
-};
+      return article
+    })
+}
