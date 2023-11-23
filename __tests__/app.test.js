@@ -236,9 +236,9 @@ describe('POST /api/articles/:article_id/comments', () => {
     return request(app)
       .post('/api/articles/2/comments')
       .send(wrongPost1)
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe('Not Found')
+        expect(body.msg).toBe('Bad Request')
       })
   })
   test('should send error when body not included', () => {
@@ -641,6 +641,18 @@ describe('POST allows posting of articles /api/articles ', () => {
     body: "well isn't it nice to get a new article in here",
     topic: 'paper',
   }
+  const badArticle = {
+    wrongname: 'butter_bridge',
+    notitle: 'this is a new article',
+    incorrect: "well isn't it nice to get a new article in here",
+    whatisthis: 'paper',
+  }
+  const badContent = {
+    author: 'butter_bridge',
+    title: 1,
+    body: 10000,
+    topic: 'this is not a topic and should be rejected',
+  }
   test('should allow posting of an article', () => {
     return request(app)
       .post('/api/articles')
@@ -661,11 +673,22 @@ describe('POST allows posting of articles /api/articles ', () => {
         })
       })
   })
+  test('should send correct error when passed object with incorrect keys', () => {
+    return request(app)
+      .post('/api/articles')
+      .send(badArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+  test('should send correct error when passed object with incorrect values', () => {
+    return request(app)
+      .post('/api/articles')
+      .send(badContent)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
 })
-
-/* POST /api/articles
-Description
-
-Consider what errors could occur with this endpoint, and make sure to test for them.
-
-Remember to add a description of this endpoint to your /api endpoint. */

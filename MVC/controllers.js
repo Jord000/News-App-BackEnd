@@ -86,8 +86,10 @@ exports.getCommentById = (req, res, next) => {
 exports.postCommentToArticle = (req, res, next) => {
   const articleId = req.params.article_id
   const post = req.body
-  addCommentToArticleById(articleId, post)
-    .then(([comment]) => {
+  Promise.all([
+    selectArticleById(articleId),
+    addCommentToArticleById(articleId, post),
+  ]).then(([result,[comment]]) => {
       res.status(201).send({ comment })
     })
     .catch(next)

@@ -102,6 +102,19 @@
         "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
       }
     },
+    "GET /api/comments/:comment_id": {
+      "description": "Searches for a comment by id",
+      "queries": [],
+      "format": "Object with a key of Comment and value as an array of updated comment object",
+      "exampleResponse": {
+        "comment_id": 3,
+        "article_id": 1,
+        "author": "icellusedkars",
+        "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+        "created_at": "'2020-03-01T01:13:00.000Z",
+        "votes": 99
+      }
+    },
   
   "POST /api/articles/:article_id/comments": {
     "description": "Posts a JSON object containing a comment to the specific article_id in the path",
@@ -116,19 +129,23 @@
       "created_at": "2023-11-21T14:13:17.328Z"
     }
   },
-  "GET /api/comments/:comment_id": {
-    "description": "Searches for a comment by id",
+  "POST /api/articles/": {
+    "description": "Posts a JSON object containing an article to the articles",
     "queries": [],
-    "format": "Object with a key of Comment and value as an array of updated comment object",
+    "format": "Post object requires valid author from users,title,body and valid topic from topics",
     "exampleResponse": {
-      "comment_id": 3,
-      "article_id": 1,
-      "author": "icellusedkars",
-      "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
-      "created_at": "'2020-03-01T01:13:00.000Z",
-      "votes": 99
-    }
+      "article_id": 14,
+      "author": "butter_bridge",
+      "title": "this is a new article",
+      "body": "well isn't it nice to get a new article in here",
+      "topic": "paper",
+      "votes": 0,
+      "created_at": "2023-11-21T14:13:17.328Z",
+      "comment_count": 0,
+      "article_img_url":
+    "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700" }
   },
+
   "DELETE /api/comments/:comment_id": {
     "description": "Deletes a comment based on comment_id",
     "queries": [],
