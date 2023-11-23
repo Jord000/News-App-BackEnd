@@ -142,6 +142,17 @@ exports.selectAllUsers = () => {
     return users
   })
 }
+
+exports.selectUsername = (username) =>{
+  return db
+    .query('SELECT*FROM users WHERE username = $1;', [username])
+    .then(({ rows: [username] }) => {
+      if (!username) {
+        return Promise.reject({ status: 404, msg: 'Not Found' })
+      } else return username
+    })
+}
+
 exports.incVotesById = (id, inc) => {
   return db
     .query(
