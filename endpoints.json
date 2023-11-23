@@ -91,7 +91,18 @@
       "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
     }
   },
-
+  
+    "GET /api/users/:username": {
+      "description": "Searches for a user by username",
+      "queries": [],
+      "format": "Object with a key of user",
+      "exampleResponse": {
+        "username": "lurker",
+        "name": "do_nothing",
+        "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+      }
+    },
+  
   "POST /api/articles/:article_id/comments": {
     "description": "Posts a JSON object containing a comment to the specific article_id in the path",
     "queries": [],
