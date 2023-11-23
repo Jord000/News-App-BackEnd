@@ -4,11 +4,11 @@ const {
   getArticleById,
   getCommentsByArticleId,
   postCommentToArticle,
-  incrementVotes,
+  incrementArticleVotes,
 } = require('../MVC/controllers.js')
 
 articlesRouter.get('/', getAllArticles)
-articlesRouter.route('/:article_id').get(getArticleById).patch(incrementVotes)
+articlesRouter.route('/:article_id').get(getArticleById).patch(incrementArticleVotes)
 
 articlesRouter
   .route('/:article_id/comments')

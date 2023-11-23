@@ -116,6 +116,19 @@
       "created_at": "2023-11-21T14:13:17.328Z"
     }
   },
+  "GET /api/comments/:comment_id": {
+    "description": "Searches for a comment by id",
+    "queries": [],
+    "format": "Object with a key of Comment and value as an array of updated comment object",
+    "exampleResponse": {
+      "comment_id": 3,
+      "article_id": 1,
+      "author": "icellusedkars",
+      "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+      "created_at": "'2020-03-01T01:13:00.000Z",
+      "votes": 99
+    }
+  },
   "DELETE /api/comments/:comment_id": {
     "description": "Deletes a comment based on comment_id",
     "queries": [],
@@ -123,7 +136,7 @@
     "exampleResponse": {}
   },
   "PATCH: /api/articles/:article_id": {
-    "description": "allows for incrementing of votes",
+    "description": "allows for incrementing of votes to an article",
     "queries": [],
     "format": "Object with a key of inc_votes and number value to increment by eg 10 || -20",
     "exampleResponse": {
@@ -135,6 +148,19 @@
       "created_at": 1596464040000,
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       "votes": 20
+    }
+  },
+  "PATCH: /api/comments/:comment_id": {
+    "description": "allows for incrementing of votes to a comment",
+    "queries": [],
+    "format": "Object with a key of inc_votes and number value to increment by eg 10 || -20",
+    "exampleResponse": {
+      "comment_id": 3,
+      "article_id": 1,
+      "author": "icellusedkars",
+      "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+      "created_at": "'2020-03-01T01:13:00.000Z",
+      "votes": 99
     }
   }
 }

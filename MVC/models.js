@@ -153,7 +153,7 @@ exports.selectUsername = (username) =>{
     })
 }
 
-exports.incVotesById = (id, inc) => {
+exports.incArticleVotesById = (id, inc) => {
   return db
     .query(
       'UPDATE articles SET votes = votes + $2 WHERE article_id = $1 RETURNING*;',
@@ -161,5 +161,17 @@ exports.incVotesById = (id, inc) => {
     )
     .then(({ rows: article }) => {
       return article
+    })
+}
+
+exports.incCommentVotesById = (id,inc)=>{
+  return db
+    .query(
+      'UPDATE comments SET votes = votes + $2 WHERE comment_id = $1 RETURNING*;',
+      [id, inc]
+    )
+    .then(({ rows: comment }) => {
+
+      return comment
     })
 }

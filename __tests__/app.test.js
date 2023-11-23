@@ -512,4 +512,104 @@ describe('GET users by username /api/users/:username', () => {
   })
 })
 
+describe('GET comment by comment id /api/comments/:comment_id', () => {
+  test('should return the correct comment by id', () => {
+    return request(app)
+      .get('/api/comments/3')
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          comment_id: 3,
+          article_id: 1,
+          author: 'icellusedkars',
+          body: 'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
+          created_at: '2020-03-01T01:13:00.000Z',
+          votes: 100,
+        })
+      })
+  })
+  test('should send error with incorrect id', () => {
+    return request(app)
+      .get('/api/comments/99')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found')
+      })
+  })
+  test('should send error with wrong kind of id', () => {
+    return request(app)
+      .get('/api/comments/incorrect')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+})
 
+describe('PATCH /api/comments/:comment_id', () => {
+  const vote1 = { inc_votes: 1 }
+  const vote2 = { inc_votes: -1 }
+  const wrongVote = { wrong: 1 }
+  test('should allow the changing of votes to comment by comment id', () => {
+    return request(app)
+      .patch('/api/comments/3')
+      .send(vote1)
+      .expect(200)
+      .then(
+        ({
+          body: {
+            comment: [updatedComment],
+          },
+        }) => {
+          expect(updatedComment).toEqual({
+            comment_id: 3,
+            article_id: 1,
+            author: 'icellusedkars',
+            body: 'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
+            created_at: '2020-03-01T01:13:00.000Z',
+            votes: 101,
+          })
+        }
+      )
+  })
+  test('should allow the reduction of votes to comment by comment id', () => {
+    return request(app)
+      .patch('/api/comments/3')
+      .send(vote2)
+      .expect(200)
+      .then(
+        ({
+          body: {
+            comment: [updatedComment],
+          },
+        }) => {
+          expect(updatedComment).toEqual({
+            comment_id: 3,
+            article_id: 1,
+            author: 'icellusedkars',
+            body: 'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
+            created_at: '2020-03-01T01:13:00.000Z',
+            votes: 99,
+          })
+        }
+      )
+  })
+  test('should handle incorrect id', () => {
+    return request(app)
+      .patch('/api/comments/noarticleid')
+      .send(vote1)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+  test('should send correct error back when patch object incorrect', () => {
+    return request(app)
+      .patch('/api/comments/2')
+      .send(wrongVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+})

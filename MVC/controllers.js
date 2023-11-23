@@ -9,7 +9,8 @@ const {
   selectAllComments,
   selectCommentById,
   selectAllUsers,
-  incVotesById,
+  incArticleVotesById,
+  incCommentVotesById,
   selectTopicBySlug,
   selectUsername,
 } = require('./models')
@@ -72,6 +73,15 @@ exports.getCommentsByArticleId = (req, res, next) => {
     .catch(next)
 }
 
+exports.getCommentById = (req, res, next) => {
+  const commentId = req.params.comment_id
+  selectCommentById(commentId)
+    .then((comment) => {
+      res.status(200).send({ comment })
+    })
+    .catch(next)
+}
+
 exports.postCommentToArticle = (req, res, next) => {
   const articleId = req.params.article_id
   const post = req.body
@@ -95,17 +105,31 @@ exports.deleteCommentById = (req, res, next) => {
     .catch(next)
 }
 
-exports.incrementVotes = (req, res, next) => {
+exports.incrementArticleVotes = (req, res, next) => {
   const articleId = req.params.article_id
   const incAmount = req.body.inc_votes
   const promisesInput = [
     selectArticleById(articleId),
-    incVotesById(articleId, incAmount),
+    incArticleVotesById(articleId, incAmount),
   ]
 
   Promise.all(promisesInput)
-    .then(([result0, result1]) => {
-      res.status(200).send({ article: result1 })
+    .then(([result0, articleOutput]) => {
+      res.status(200).send({ article: articleOutput })
+    })
+    .catch(next)
+}
+
+exports.incrementCommentVotes = (req, res, next) => {
+  const commentId = req.params.comment_id
+  const incAmount = req.body.inc_votes
+  const promiseInput = [
+    selectCommentById(commentId),
+    incCommentVotesById(commentId, incAmount),
+  ]
+  Promise.all(promiseInput)
+    .then(([result0, commentOutput]) => {
+      res.status(200).send({ comment: commentOutput })
     })
     .catch(next)
 }
@@ -120,9 +144,11 @@ exports.getAllUsers = (req, res, next) => {
 
 exports.getUserByUsername = (req, res, next) => {
   const username = req.params.username
-  selectUsername(username).then((user) => {
-    res.status(200).send({ user })
-  }).catch(next)
+  selectUsername(username)
+    .then((user) => {
+      res.status(200).send({ user })
+    })
+    .catch(next)
 }
 
 exports.getAllComments = (req, res, next) => {
