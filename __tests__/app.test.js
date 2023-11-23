@@ -120,7 +120,6 @@ describe('GET:200 /api/articles', () => {
       .get('/api/articles')
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(articleData.length)
         articles.forEach((article) => {
           expect(Object.keys(article)).toEqual(
             expect.arrayContaining(correctProperties)
@@ -692,3 +691,62 @@ describe('POST allows posting of articles /api/articles ', () => {
       })
   })
 })
+
+describe('GET /api/articles/pagination and limit', () => {
+  test('allows a limit to be set via query to the articles', () => {
+    return request(app)
+      .get('/api/articles?limit=3')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(3)
+      })
+  })
+  test('should not allow a limit over 50 to be set', () => {
+    return request(app)
+      .get('/api/articles?limit=55')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request - limit too high max 50')
+      })
+  })
+  test('should prevent impropr input', () => {
+    return request(app)
+      .get('/api/articles?limit=criticaldamage')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+  test('allows a page to be set to the articles', () => {
+    return request(app)
+      .get('/api/articles?p=2')
+      .expect(200)
+      .then(({ body :{articles, total_count}}) => {
+        expect(articles.length).toBe(3)
+        expect(articles[2]).toEqual({
+          article_id: 7,
+          article_img_url:
+            'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+          author: 'icellusedkars',
+          comment_count: '0',
+          created_at: '2020-01-07T14:08:00.000Z',
+          title: 'Z',
+          topic: 'mitch',
+          votes: 0,
+        }
+    )
+    expect(total_count).toBe(13)
+      })
+  })
+  test('should error when the page number is too high', () => {
+      return request(app)
+        .get('/api/articles?p=100')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Bad Request')
+        })
+    })
+  });
+
+
+

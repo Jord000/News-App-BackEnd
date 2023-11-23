@@ -14,6 +14,7 @@ const {
   selectTopicBySlug,
   selectUsername,
   postArticletoArticles,
+  totalArticleCount,
 } = require('./models')
 
 exports.healthCheck = (req, res) => {
@@ -44,9 +45,19 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-  const { topic, sort_by, order } = req.query
-  const promiseInput = [selectAllArticles(topic, sort_by, order)]
-  if (Object.keys(req.query).length && !topic && !sort_by && !order) {
+  const { topic, sort_by, order, limit, p } = req.query
+  const promiseInput = [
+    selectAllArticles(topic, sort_by, order, limit, p),
+    totalArticleCount(p),
+  ]
+  if (
+    Object.keys(req.query).length &&
+    !topic &&
+    !sort_by &&
+    !order &&
+    !limit &&
+    !p
+  ) {
     promiseInput.push(Promise.reject({ status: 400, msg: 'Bad Request' }))
   }
 
@@ -54,8 +65,8 @@ exports.getAllArticles = (req, res, next) => {
     promiseInput.push(selectTopicBySlug(topic))
   }
   Promise.all(promiseInput)
-    .then(([articles]) => {
-      res.status(200).send({ articles })
+    .then(([articles, { total_count }]) => {
+      res.status(200).send({ articles, total_count })
     })
     .catch(next)
 }
@@ -89,7 +100,8 @@ exports.postCommentToArticle = (req, res, next) => {
   Promise.all([
     selectArticleById(articleId),
     addCommentToArticleById(articleId, post),
-  ]).then(([result,[comment]]) => {
+  ])
+    .then(([result, [comment]]) => {
       res.status(201).send({ comment })
     })
     .catch(next)
