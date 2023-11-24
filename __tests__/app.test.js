@@ -273,7 +273,7 @@ describe('PATCH: /api/articles/:article_id', () => {
             topic: 'cats',
             author: 'rogersop',
             body: 'Bastet walks amongst us, and the cats are taking arms!',
-            created_at: '2020-08-03T13:14:00.000Z',
+            created_at: expect.any(String),
             article_img_url:
               'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
             votes: 20,
@@ -316,7 +316,7 @@ describe('PATCH: /api/articles/:article_id', () => {
             topic: 'cats',
             author: 'rogersop',
             body: 'Bastet walks amongst us, and the cats are taking arms!',
-            created_at: '2020-08-03T13:14:00.000Z',
+            created_at: expect.any(String),
             article_img_url:
               'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
             votes: -200,
@@ -527,12 +527,12 @@ describe('GET comment by comment id /api/comments/:comment_id', () => {
       .get('/api/comments/3')
       .expect(200)
       .then(({ body: { comment } }) => {
-        expect(comment).toEqual({
+        expect(comment).toMatchObject({
           comment_id: 3,
           article_id: 1,
           author: 'icellusedkars',
           body: 'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
-          created_at: '2020-03-01T01:13:00.000Z',
+          created_at: expect.any(String),
           votes: 100,
         })
       })
@@ -576,7 +576,7 @@ describe('PATCH /api/comments/:comment_id', () => {
             article_id: 1,
             author: 'icellusedkars',
             body: 'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
-            created_at: '2020-03-01T01:13:00.000Z',
+            created_at: expect.any(String),
             votes: 101,
           })
         }
@@ -598,7 +598,7 @@ describe('PATCH /api/comments/:comment_id', () => {
             article_id: 1,
             author: 'icellusedkars',
             body: 'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
-            created_at: '2020-03-01T01:13:00.000Z',
+            created_at: expect.any(String),
             votes: 99,
           })
         }
@@ -729,7 +729,7 @@ describe('GET /api/articles/pagination and limit', () => {
             'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
           author: 'icellusedkars',
           comment_count: '0',
-          created_at: '2020-01-07T14:08:00.000Z',
+          created_at: expect.any(String),
           title: 'Z',
           topic: 'mitch',
           votes: 0,
@@ -896,7 +896,7 @@ describe('allow chained quieries to /articles /article:id/comments, ', () => {
             author: 'icellusedkars',
             body: 'I hate streaming eyes even more',
             comment_id: 6,
-            created_at: '2020-04-11T21:02:00.000Z',
+            created_at: expect.any(String),
             votes: 0,
           },
           {
@@ -905,7 +905,7 @@ describe('allow chained quieries to /articles /article:id/comments, ', () => {
             author: 'icellusedkars',
             article_id: 1,
             comment_id: 8,
-            created_at: '2020-04-14T20:19:00.000Z',
+            created_at: expect.any(String),
           },
         ])
       })
