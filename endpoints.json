@@ -41,7 +41,7 @@
   },
   "GET /api/articles/:article_id": {
     "description": "Searches for a specific article by article_id",
-    "queries": ["comment_count"],
+    "queries": [],
     "format": "Object with a key of article{id} and value as object with article information",
     "exampleResponse": {
       "article5": {

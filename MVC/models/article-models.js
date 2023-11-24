@@ -37,27 +37,41 @@ exports.selectAllArticles = (topic, sort_by, order, limit, p) => {
     FROM articles
     LEFT JOIN comments ON articles.article_id=comments.article_id`
 
-  let defaultgroup = ` GROUP BY articles.article_id `
-  let defaultSort = ` ORDER BY created_at DESC`
-  let defaultLimit = ` LIMIT 10;`
-
-  if (topic) {
-    selectArray = [`${topic}`]
-    selectString =
-      selectString + ' WHERE articles.topic = $1' + defaultgroup + defaultSort
-  } else if (sort_by) {
-    selectString += defaultgroup += ` ORDER BY ${sort_by} DESC;`
-  } else if (order === 'ASC') {
-    selectString += defaultgroup += ` ORDER BY created_at ${order};`
-  } else if (limit) {
-    selectArray = [limit]
-    selectString += defaultgroup += defaultSort + ` lIMIT $1;`
-  } else if (p) {
-    selectArray = [p - 1]
-    selectString += defaultgroup += defaultSort + ` LIMIT 10 OFFSET 10*$1`
-  } else {
-    selectString += defaultgroup += defaultSort += defaultLimit
+  let defaultgroup = ` GROUP BY articles.article_id`
+  if (topic || limit || sort_by || order || p) {
+    selectArray = []
   }
+  if (topic) {
+    selectArray.push(`${topic}`)
+    selectString +=` WHERE articles.topic = $${selectArray.length}`+
+    defaultgroup 
+  } else {
+    selectString += defaultgroup
+  }
+
+  if (sort_by) {
+    selectString += ` ORDER BY ${sort_by}`
+  } else {
+    selectString += ` ORDER BY created_at`
+  }
+
+  if (order === 'ASC') {
+    selectString += ' ASC'
+  } else {
+    selectString += ' DESC'
+  }
+
+  if (limit) {
+    selectArray.push(limit)
+    selectString += ` lIMIT $${selectArray.length}`
+  } else {
+    selectString += ` LIMIT 10`
+  }
+  if (p) {
+    selectArray.push(p - 1)
+    selectString += ` OFFSET ${limit||10}*$${selectArray.length}`
+  }
+  selectString += ';'
   return db.query(selectString, selectArray).then(({ rows }) => {
     return rows
   })
@@ -89,10 +103,10 @@ exports.selectArticleById = (id) => {
     .then(({ rows: [article] }) => {
       if (article) {
         article.comment_count = Number(article.comment_count)
-      } else if (!article) {
+        return article
+      } else {
         return Promise.reject({ status: 404, msg: 'Not Found' })
       }
-      return article
     })
 }
 

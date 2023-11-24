@@ -883,3 +883,69 @@ describe('DELETE /api/articles/:article_id', () => {
       })
   })
 })
+
+describe('allow chained quieries to /articles /article:id/comments, ', () => {
+  test('should allow a limit and pagination at /article:id/comments', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=2&p=3')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual([
+          {
+            article_id: 1,
+            author: 'icellusedkars',
+            body: 'I hate streaming eyes even more',
+            comment_id: 6,
+            created_at: '2020-04-11T21:02:00.000Z',
+            votes: 0,
+          },
+          {
+            body: 'Delicious crackerbreads',
+            votes: 0,
+            author: 'icellusedkars',
+            article_id: 1,
+            comment_id: 8,
+            created_at: '2020-04-14T20:19:00.000Z',
+          },
+        ])
+      })
+  })
+  test('should allow combined queries of topic sort_by,order and limit on /articles', () => {
+    return request(app)
+      .get('/api/articles?limit=2&p=1&topic=mitch&sort_by=votes&order=ASC')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toEqual(2)
+        articles.forEach((article) => expect(article.topic).toBe('mitch'))
+        expect(articles).toBeSortedBy('votes', { descending: false })
+      })
+  })
+  test('extra testing to ensure pagenumbers are correct', () => {
+    return request(app)
+      .get('/api/articles?limit=2&p=2&sort_by=article_id&order=ASC')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toEqual(2)
+        expect(articles[0].article_id).toBe(3)
+        expect(articles[1].article_id).toBe(4)
+      })
+  })
+  test('sad path testing on multiple queries', () => {
+    return request(app)
+      .get(
+        '/api/articles?notcorrect=2&error=2&error=article_id&shouldntbehere=ASC'
+      )
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+  test('sad path testing on multiple queries', () => {
+    return request(app)
+    .get('/api/articles?limit=1000&p=1000&sort_by=10000&order=1000')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+})

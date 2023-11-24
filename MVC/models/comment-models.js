@@ -1,10 +1,10 @@
 const db = require('../../db/connection')
 
 exports.selectCommentsByArticleId = (id, limit, p) => {
-  let selectString = 'SELECT*FROM comments WHERE article_id = $1'
+  let selectString =
+    'SELECT*FROM comments WHERE article_id = $1 ORDER BY created_at ASC'
   let selectArray = [id]
-  let defaultOrder = ` ORDER BY created_at ASC`
-  let defaultLimit = ` LIMIT 10;`
+  let defaultLimit = ` LIMIT 10`
   if (limit > 50) {
     return Promise.reject({
       status: 400,
@@ -13,13 +13,15 @@ exports.selectCommentsByArticleId = (id, limit, p) => {
   }
   if (limit) {
     selectArray.push(limit)
-    selectString += defaultOrder += ` LIMIT $2;`
-  } else if (p) {
-    selectArray.push(p - 1)
-    selectString += defaultOrder += ` LIMIT 10 OFFSET 10*$2;`
+    selectString += ` LIMIT $${selectArray.length}`
   } else {
-    selectString += defaultOrder += defaultLimit
+    selectString += defaultLimit
   }
+  if (p) {
+    selectArray.push(p - 1)
+    selectString += ` OFFSET ${limit||10}*$${selectArray.length}`
+  }
+  selectString+=`;`
   return db.query(selectString, selectArray).then(({ rows: comments }) => {
     if (comments.length === 0 && p > 1) {
       return Promise.reject({ status: 400, msg: 'Bad Request' })
