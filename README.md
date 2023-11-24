@@ -27,4 +27,4 @@ The dependencies used are as follows:
 - pg
 
 For testing use the scripts to populate the PSQL database and run test files through jest.
-Created using node v18.13.0 & PostgresSQL 15.4
+Created using node v18.13.0 & PostgresSQL v15.4
