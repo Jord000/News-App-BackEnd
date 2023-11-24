@@ -1,0 +1,35 @@
+name: main
+
+on:
+  pull_request:
+    branches:
+      -main
+  workflow_dispatch:
+  
+jobs:
+  test_utils:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout and clone repo
+        uses: actions/checkout@v4.1.1
+      - name: install packages
+        run: npm install
+      - name: run test utils script
+        run: npm test utils.test.js
+
+  test_app:
+    needs: test_utils
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout and clone repo
+        uses: actions/checkout@v4.1.1
+      - name: install packages
+        run: npm install  
+      - name: Use PostgreSQL
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: 'nc_news_test'
+          postgresql user: 'test_user'
+          postgresql password: 'test_password'  
+      - name: Run tests
+        run: PGDATABASE=nc_news_test PGUSER=test_user PGPASSWORD=test_password npm test app.test.js
