@@ -15,6 +15,7 @@ const {
   selectUsername,
   postArticletoArticles,
   totalArticleCount,
+  postTopic,
 } = require('./models')
 
 exports.healthCheck = (req, res) => {
@@ -185,6 +186,15 @@ exports.postAnArticle = (req, res, next) => {
       selectArticleById(article_id).then((article) => {
         res.status(201).send({ article })
       })
+    })
+    .catch(next)
+}
+
+exports.postNewTopic = (req, res, next) => {
+  const topicToPost = req.body
+  postTopic(topicToPost)
+    .then((topic) => {
+      res.status(201).send({ topic })
     })
     .catch(next)
 }

@@ -797,3 +797,57 @@ describe('GET /api/articles/:article_id/comments pagination and limit ', () => {
       })
   })
 })
+describe('POST /api/topics posting a new topic', () => {
+  const topic1 = {
+    slug: 'gaming',
+    description: 'all things gaming related including board games and video',
+  }
+  const wrongTopic1 = {
+    sloog: 'topic',
+    dooscreeptiooon: 'this is incorrect',
+  }
+  const wrongTopic2 = {
+    slug: 'gaming',
+  }
+  test('should allow the posting of a new topic to topics', () => {
+    return request(app)
+      .post('/api/topics')
+      .send(topic1)
+      .expect(201)
+      .then(({ body: { topic } }) => {
+        expect(topic).toEqual({
+          slug: 'gaming',
+          description:
+            'all things gaming related including board games and video',
+        })
+      })
+  })
+  test('should return correct error when wrong endpoint applied', () => {
+    return request(app)
+      .post('/api/tupacs')
+      .send(topic1)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('incorrect path - path not found')
+      })
+  })
+  test('should send correct error back when user wrong formatting used', () => {
+    return request(app)
+      .post('/api/topics')
+      .send(wrongTopic1)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+  test('should send error when a key is missing', () => {
+    return request(app)
+      .post('/api/topics')
+      .send(wrongTopic2)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+})
+

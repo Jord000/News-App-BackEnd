@@ -130,7 +130,7 @@
       "created_at": "2023-11-21T14:13:17.328Z"
     }
   },
-  "POST /api/articles/": {
+  "POST /api/articles": {
     "description": "Posts a JSON object containing an article to the articles",
     "queries": [],
     "format": "Post object requires valid author from users,title,body and valid topic from topics",
@@ -179,6 +179,15 @@
       "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
       "created_at": "'2020-03-01T01:13:00.000Z",
       "votes": 99
+    }
+  },
+  "POST /api/topics": {
+    "description": "Posts a JSON object containing a topic to the topics",
+    "queries": [],
+    "format": "Post object requires a new slug and descritption",
+    "exampleResponse": {
+      "slug": "gaming",
+      "description": "all things gaming related including board games and video"
     }
   }
 }
