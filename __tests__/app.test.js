@@ -851,36 +851,35 @@ describe('POST /api/topics posting a new topic', () => {
   })
 })
 
-describe('DELETE /api/articles/:article_id',()=>{
+describe('DELETE /api/articles/:article_id', () => {
   test('should allow the deleting of an article by its ID', () => {
-      const startingNumOfArticles = 13
-      return request(app)
-        .delete('/api/articles/10')
-        .expect(204)
-        .then(() => {
-          return request(app)
-            .get('/api/articles?limit=20')
-            .expect(200)
-            .then(({ body: { articles } }) => {
-              console.log(articles)
-              expect(articles.length).toBe(12)
-            })
-        })
-    })
-    test('should get correct response for incorrect id', () => {
-      return request(app)
-        .delete('/api/articles/99')
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe('Not Found')
-        })
-    })
-    test('should handle bad inputs and protect from injection', () => {
-      return request(app)
-        .delete('/api/articles/thiscouldbeinjection')
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe('Bad Request')
-        })
-    })
-  });
+    const startingNumOfArticles = 13
+    return request(app)
+      .delete('/api/articles/10')
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .get('/api/articles?limit=20')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).toBe(12)
+          })
+      })
+  })
+  test('should get correct response for incorrect id', () => {
+    return request(app)
+      .delete('/api/articles/99')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Not Found')
+      })
+  })
+  test('should handle bad inputs and protect from injection', () => {
+    return request(app)
+      .delete('/api/articles/thiscouldbeinjection')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+})

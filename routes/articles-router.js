@@ -2,18 +2,22 @@ const articlesRouter = require('express').Router()
 const {
   getAllArticles,
   getArticleById,
-  getCommentsByArticleId,
-  postCommentToArticle,
   incrementArticleVotes,
   postAnArticle,
   deleteArticleById,
-} = require('../MVC/controllers.js')
+} = require('../MVC/controllers/article-controllers.js')
+
+const {
+  getCommentsByArticleId,
+  postCommentToArticle,
+} = require('../MVC/controllers/comment-controllers.js')
 
 articlesRouter.route('/').get(getAllArticles).post(postAnArticle)
 articlesRouter
   .route('/:article_id')
   .get(getArticleById)
-  .patch(incrementArticleVotes).delete(deleteArticleById)
+  .patch(incrementArticleVotes)
+  .delete(deleteArticleById)
 
 articlesRouter
   .route('/:article_id/comments')

@@ -1,5 +1,9 @@
 const express = require('express')
-const { healthCheck, incorrectPath, getEndPoints } = require('./controllers')
+const {
+  healthCheck,
+  incorrectPath,
+  getEndPoints,
+} = require('./controllers/general-controllers')
 const { customError, internalError, sqlError } = require('./errors')
 const apiRouter = require('../routes/api-router')
 
