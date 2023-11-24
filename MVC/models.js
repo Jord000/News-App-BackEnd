@@ -124,19 +124,25 @@ exports.selectCommentsByArticleId = (id, limit, p) => {
   let selectArray = [id]
   let defaultOrder = ` ORDER BY created_at ASC`
   let defaultLimit = ` LIMIT 10;`
-
+  if (limit > 50) {
+    return Promise.reject({
+      status: 400,
+      msg: 'Bad Request - limit too high max 50',
+    })
+  }
   if (limit) {
     selectArray.push(limit)
     selectString += defaultOrder += ` LIMIT $2;`
-  }else if (p) {
+  } else if (p) {
     selectArray.push(p - 1)
-    selectString += defaultOrder +=` LIMIT 10 OFFSET 10*$2;`
-  } 
-  else {
+    selectString += defaultOrder += ` LIMIT 10 OFFSET 10*$2;`
+  } else {
     selectString += defaultOrder += defaultLimit
   }
   return db.query(selectString, selectArray).then(({ rows: comments }) => {
-    return comments
+    if (comments.length === 0 && p > 1) {
+      return Promise.reject({ status: 400, msg: 'Bad Request' })
+    } else return comments
   })
 }
 

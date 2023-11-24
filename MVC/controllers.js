@@ -72,14 +72,15 @@ exports.getAllArticles = (req, res, next) => {
 }
 
 exports.getCommentsByArticleId = (req, res, next) => {
-  const{limit,p} = req.query
+  const { limit, p } = req.query
   const articleId = req.params.article_id
   const promisesInput = [
     selectArticleById(articleId),
-    selectCommentsByArticleId(articleId,limit,p),
+    selectCommentsByArticleId(articleId, limit, p),
   ]
-
-
+  if (Object.keys(req.query).length && !limit && !p) {
+    promisesInput.push(Promise.reject({ status: 400, msg: 'Bad Request' }))
+  }
 
   Promise.all(promisesInput)
     .then((results) => {

@@ -764,5 +764,36 @@ describe('GET /api/articles/:article_id/comments pagination and limit ', () => {
         expect(comments.length).toEqual(1)
       })
   })
+  test('should return error on incorrect query', () => {
+    return request(app)
+      .get('/api/articles/1/comments?wrong=2')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+  test('should not allow a limit over 50 to be set', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=55')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request - limit too high max 50')
+      })
+  })
+  test('should prevent improper input', () => {
+    return request(app)
+      .get('/api/articles/1/comments?limit=criticaldamage')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
+  test('should error when the page number is too high', () => {
+    return request(app)
+      .get('/api/articles/1/comments?p=100')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  })
 })
-
