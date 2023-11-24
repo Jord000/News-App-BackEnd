@@ -77,9 +77,15 @@ exports.selectAllArticles = (topic, sort_by, order, limit, p) => {
   })
 }
 
-exports.totalArticleCount = (p) => {
+exports.totalArticleCount = (p,topic) => {
+  let selectArray = []
+  const selectString = `SELECT COUNT(*) AS total_count FROM articles`
+  if(topic){
+    selectArray.push(topic)
+    selectString + ` WHERE topic = $1;`
+  }
   return db
-    .query(`SELECT COUNT(*) AS total_count FROM articles`)
+    .query(selectString,selectArray)
     .then(({ rows: [count] }) => {
       count.total_count = Number(count.total_count)
       if (count.total_count / 10 < p - 1) {
