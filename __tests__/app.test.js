@@ -10,6 +10,7 @@ const {
 } = require('../db/data/test-data/index.js')
 const endpointFile = require('../endpoints.json')
 const jestSorted = require('jest-sorted')
+const { forEach } = require('../db/data/test-data/articles.js')
 
 afterAll(() => {
   db.end()
@@ -948,4 +949,14 @@ describe('allow chained quieries to /articles /article:id/comments, ', () => {
         expect(body.msg).toBe('Bad Request')
       })
   })
+  test('should return proper total count when topic applied', () => {
+    return request(app)
+    .get('/api/articles?topic=mitch&limit=2&page=1')
+    .expect(200)
+    .then(({ body: { articles ,total_count} }) => {
+      expect(articles.length).toEqual(2)
+      articles.forEach(article=>expect(article.topic).toBe('mitch'))
+      expect(total_count).toBe(12)
+    })
+  });
 })

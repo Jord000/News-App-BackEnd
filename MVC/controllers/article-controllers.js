@@ -22,7 +22,7 @@ exports.getArticleById = (req, res, next) => {
     const { topic, sort_by, order, limit, p } = req.query
     const promiseInput = [
       selectAllArticles(topic, sort_by, order, limit, p),
-      totalArticleCount(p),
+      totalArticleCount(p,topic),
     ]
     if (
       Object.keys(req.query).length &&
