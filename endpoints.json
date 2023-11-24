@@ -146,11 +146,26 @@
       "article_img_url":
     "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700" }
   },
+  "POST /api/topics": {
+    "description": "Posts a JSON object containing a topic to the topics",
+    "queries": [],
+    "format": "Post object requires a new slug and descritption",
+    "exampleResponse": {
+      "slug": "gaming",
+      "description": "all things gaming related including board games and video"
+    }
+  },
 
   "DELETE /api/comments/:comment_id": {
     "description": "Deletes a comment based on comment_id",
     "queries": [],
     "format": "comment_id required to delete the object",
+    "exampleResponse": {}
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "Deletes an article based on article_id",
+    "queries": [],
+    "format": "article_id required to delete the object",
     "exampleResponse": {}
   },
   "PATCH: /api/articles/:article_id": {
@@ -180,14 +195,6 @@
       "created_at": "'2020-03-01T01:13:00.000Z",
       "votes": 99
     }
-  },
-  "POST /api/topics": {
-    "description": "Posts a JSON object containing a topic to the topics",
-    "queries": [],
-    "format": "Post object requires a new slug and descritption",
-    "exampleResponse": {
-      "slug": "gaming",
-      "description": "all things gaming related including board games and video"
-    }
   }
+
 }

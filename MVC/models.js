@@ -228,17 +228,21 @@ exports.postArticletoArticles = (articlePost) => {
 }
 
 exports.postTopic = (topicToPost) => {
-  const { slug, description} = topicToPost
-  if(!slug || !description){
+  const { slug, description } = topicToPost
+  if (!slug || !description) {
     return Promise.reject({ status: 400, msg: 'Bad Request' })
   }
 
   return db
-  .query(
-    'INSERT INTO topics (slug, description) VALUES ($1,$2) RETURNING *;',
-    [slug, description]
-  )
-  .then(({ rows:[topic] }) => {
-    return topic
-  })
+    .query(
+      'INSERT INTO topics (slug, description) VALUES ($1,$2) RETURNING *;',
+      [slug, description]
+    )
+    .then(({ rows: [topic] }) => {
+      return topic
+    })
+}
+
+exports.deleteOneArticle = (id) => {
+  return db.query('DELETE FROM articles WHERE article_id = $1;', [id])
 }

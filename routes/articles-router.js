@@ -6,13 +6,14 @@ const {
   postCommentToArticle,
   incrementArticleVotes,
   postAnArticle,
+  deleteArticleById,
 } = require('../MVC/controllers.js')
 
 articlesRouter.route('/').get(getAllArticles).post(postAnArticle)
 articlesRouter
   .route('/:article_id')
   .get(getArticleById)
-  .patch(incrementArticleVotes)
+  .patch(incrementArticleVotes).delete(deleteArticleById)
 
 articlesRouter
   .route('/:article_id/comments')

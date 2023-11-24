@@ -16,6 +16,7 @@ const {
   postArticletoArticles,
   totalArticleCount,
   postTopic,
+  deleteOneArticle,
 } = require('./models')
 
 exports.healthCheck = (req, res) => {
@@ -195,6 +196,19 @@ exports.postNewTopic = (req, res, next) => {
   postTopic(topicToPost)
     .then((topic) => {
       res.status(201).send({ topic })
+    })
+    .catch(next)
+}
+
+exports.deleteArticleById = (req, res, next) => {
+  const articleId = req.params.article_id
+  const promiseInput = [
+    selectArticleById(articleId),
+    deleteOneArticle(articleId),
+  ]
+  Promise.all(promiseInput)
+    .then((promiseResults) => {
+      res.status(204).send()
     })
     .catch(next)
 }
