@@ -32,6 +32,7 @@ exports.selectAllArticles = (topic, sort_by, order, limit, p) => {
     articles.author,
     articles.created_at,
     articles.votes,
+    articles.body,
     article_img_url,
     COUNT(comment_id) AS comment_count
     FROM articles
@@ -43,8 +44,8 @@ exports.selectAllArticles = (topic, sort_by, order, limit, p) => {
   }
   if (topic) {
     selectArray.push(`${topic}`)
-    selectString +=` WHERE articles.topic = $${selectArray.length}`+
-    defaultgroup 
+    selectString += ` WHERE articles.topic = $${selectArray.length}` +
+      defaultgroup
   } else {
     selectString += defaultgroup
   }
@@ -69,7 +70,7 @@ exports.selectAllArticles = (topic, sort_by, order, limit, p) => {
   }
   if (p) {
     selectArray.push(p - 1)
-    selectString += ` OFFSET ${limit||10}*$${selectArray.length}`
+    selectString += ` OFFSET ${limit || 10}*$${selectArray.length}`
   }
   selectString += ';'
   return db.query(selectString, selectArray).then(({ rows }) => {
@@ -77,15 +78,15 @@ exports.selectAllArticles = (topic, sort_by, order, limit, p) => {
   })
 }
 
-exports.totalArticleCount = (p,topic) => {
+exports.totalArticleCount = (p, topic) => {
   let selectArray = []
   let selectString = `SELECT COUNT(*) AS total_count FROM articles`
-  if(topic){
+  if (topic) {
     selectArray.push(topic)
     selectString += ` WHERE topic = $1;`
   }
   return db
-    .query(selectString,selectArray)
+    .query(selectString, selectArray)
     .then(({ rows: [count] }) => {
       count.total_count = Number(count.total_count)
       if (count.total_count / 10 < p - 1) {
