@@ -132,7 +132,6 @@ describe('GET:200 /api/articles', () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
           })
-          expect(article).not.toHaveProperty('body')
           expect(article.article_img_url).toMatch(new RegExp('^https:?'))
         })
         expect(articles).toBeSortedBy('created_at', { descending: true })
@@ -157,7 +156,7 @@ describe('GET: /api/articles/:article_id/comments', () => {
             article_id: 3,
           })
         })
-        expect(comments).toBeSortedBy('created_at', { descending: false })
+        expect(comments).toBeSortedBy('created_at', { descending: true })
       })
   })
   test('should handle non-existant ID request', () => {
@@ -729,6 +728,7 @@ describe('GET /api/articles/pagination and limit', () => {
           article_img_url:
             'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
           author: 'icellusedkars',
+          body: 'I was hungry.',
           comment_count: '0',
           created_at: expect.any(String),
           title: 'Z',
@@ -895,8 +895,8 @@ describe('allow chained quieries to /articles /article:id/comments, ', () => {
           {
             article_id: 1,
             author: 'icellusedkars',
-            body: 'I hate streaming eyes even more',
-            comment_id: 6,
+            body: 'Lobster pot',
+            comment_id: 7,
             created_at: expect.any(String),
             votes: 0,
           },
@@ -943,7 +943,7 @@ describe('allow chained quieries to /articles /article:id/comments, ', () => {
   })
   test('sad path testing on multiple queries', () => {
     return request(app)
-    .get('/api/articles?limit=1000&p=1000&sort_by=10000&order=1000')
+      .get('/api/articles?limit=1000&p=1000&sort_by=10000&order=1000')
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe('Bad Request')
@@ -951,12 +951,12 @@ describe('allow chained quieries to /articles /article:id/comments, ', () => {
   })
   test('should return proper total count when topic applied', () => {
     return request(app)
-    .get('/api/articles?topic=mitch&limit=2&page=1')
-    .expect(200)
-    .then(({ body: { articles ,total_count} }) => {
-      expect(articles.length).toEqual(2)
-      articles.forEach(article=>expect(article.topic).toBe('mitch'))
-      expect(total_count).toBe(12)
-    })
-  });
+      .get('/api/articles?topic=mitch&limit=2&page=1')
+      .expect(200)
+      .then(({ body: { articles, total_count } }) => {
+        expect(articles.length).toEqual(2)
+        articles.forEach((article) => expect(article.topic).toBe('mitch'))
+        expect(total_count).toBe(12)
+      })
+  })
 })

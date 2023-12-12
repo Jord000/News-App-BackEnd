@@ -2,7 +2,7 @@ const db = require('../../db/connection')
 
 exports.selectCommentsByArticleId = (id, limit, p) => {
   let selectString =
-    'SELECT*FROM comments WHERE article_id = $1 ORDER BY created_at ASC'
+    'SELECT*FROM comments WHERE article_id = $1 ORDER BY created_at DESC'
   let selectArray = [id]
   let defaultLimit = ` LIMIT 10`
   if (limit > 50) {
